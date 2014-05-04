@@ -29,6 +29,11 @@
 		22AA2B7419022684005140DA /* NSArray+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B6719022684005140DA /* NSArray+MASAdditions.m */; };
 		22AA2B7519022684005140DA /* NSLayoutConstraint+MASDebugAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B6A19022684005140DA /* NSLayoutConstraint+MASDebugAdditions.m */; };
 		22AA2B7619022684005140DA /* View+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B6C19022684005140DA /* View+MASAdditions.m */; };
+		22C3E8CC19135AB9000035D1 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 22C3E8CB19135AB9000035D1 /* libxml2.dylib */; };
+		22C3E8DD19135F47000035D1 /* TFHpple.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8D819135F47000035D1 /* TFHpple.m */; };
+		22C3E8DE19135F47000035D1 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8DA19135F47000035D1 /* TFHppleElement.m */; };
+		22C3E8DF19135F47000035D1 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8DC19135F47000035D1 /* XPathQuery.m */; };
+		22C3E8E419136A48000035D1 /* Beer.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8E319136A48000035D1 /* Beer.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,20 +43,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 22AA2B101900D547005140DA;
 			remoteInfo = Cellarhq;
-		};
-		22AA2B511900D633005140DA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22AA2B4C1900D633005140DA /* Hpple.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1D6058910D05DD3D006BFB54;
-			remoteInfo = Hpple;
-		};
-		22AA2B531900D633005140DA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22AA2B4C1900D633005140DA /* Hpple.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 75D785A30F34DFB000173CB6;
-			remoteInfo = Test;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -74,7 +65,6 @@
 		22AA2B3E1900D547005140DA /* CellarhqTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CellarhqTests-Info.plist"; sourceTree = "<group>"; };
 		22AA2B401900D547005140DA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		22AA2B421900D547005140DA /* CellarhqTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CellarhqTests.m; sourceTree = "<group>"; };
-		22AA2B4C1900D633005140DA /* Hpple.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Hpple.xcodeproj; path = ../../../cellarhq/hpple/Hpple.xcodeproj; sourceTree = "<group>"; };
 		22AA2B5819022684005140DA /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		22AA2B5919022684005140DA /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
 		22AA2B5A19022684005140DA /* MASConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASConstraint.h; sourceTree = "<group>"; };
@@ -97,6 +87,15 @@
 		22AA2B6B19022684005140DA /* View+MASAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASAdditions.h"; sourceTree = "<group>"; };
 		22AA2B6C19022684005140DA /* View+MASAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "View+MASAdditions.m"; sourceTree = "<group>"; };
 		22AA2B6D19022684005140DA /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
+		22C3E8CB19135AB9000035D1 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		22C3E8D719135F47000035D1 /* TFHpple.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHpple.h; path = Cellarhq/vendor/hpple/TFHpple.h; sourceTree = "<group>"; };
+		22C3E8D819135F47000035D1 /* TFHpple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHpple.m; path = Cellarhq/vendor/hpple/TFHpple.m; sourceTree = "<group>"; };
+		22C3E8D919135F47000035D1 /* TFHppleElement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TFHppleElement.h; path = Cellarhq/vendor/hpple/TFHppleElement.h; sourceTree = "<group>"; };
+		22C3E8DA19135F47000035D1 /* TFHppleElement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TFHppleElement.m; path = Cellarhq/vendor/hpple/TFHppleElement.m; sourceTree = "<group>"; };
+		22C3E8DB19135F47000035D1 /* XPathQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = XPathQuery.h; path = Cellarhq/vendor/hpple/XPathQuery.h; sourceTree = "<group>"; };
+		22C3E8DC19135F47000035D1 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Cellarhq/vendor/hpple/XPathQuery.m; sourceTree = "<group>"; };
+		22C3E8E219136A48000035D1 /* Beer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beer.h; sourceTree = "<group>"; };
+		22C3E8E319136A48000035D1 /* Beer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beer.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +103,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22C3E8CC19135AB9000035D1 /* libxml2.dylib in Frameworks */,
 				22AA2B171900D547005140DA /* CoreGraphics.framework in Frameworks */,
 				22AA2B191900D547005140DA /* UIKit.framework in Frameworks */,
 				22AA2B151900D547005140DA /* Foundation.framework in Frameworks */,
@@ -126,12 +126,12 @@
 		22AA2B081900D547005140DA = {
 			isa = PBXGroup;
 			children = (
+				22C3E8D619135F1F000035D1 /* Hpple */,
 				22AA2B5719022684005140DA /* Masonry */,
 				22AA2B1A1900D547005140DA /* Cellarhq */,
 				22AA2B3C1900D547005140DA /* CellarhqTests */,
 				22AA2B131900D547005140DA /* Frameworks */,
 				22AA2B121900D547005140DA /* Products */,
-				22AA2B4C1900D633005140DA /* Hpple.xcodeproj */,
 			);
 			sourceTree = "<group>";
 		};
@@ -147,6 +147,7 @@
 		22AA2B131900D547005140DA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				22C3E8CB19135AB9000035D1 /* libxml2.dylib */,
 				22AA2B141900D547005140DA /* Foundation.framework */,
 				22AA2B161900D547005140DA /* CoreGraphics.framework */,
 				22AA2B181900D547005140DA /* UIKit.framework */,
@@ -164,6 +165,8 @@
 				22AA2B2D1900D547005140DA /* ViewController.m */,
 				22AA2B2F1900D547005140DA /* Images.xcassets */,
 				22AA2B1B1900D547005140DA /* Supporting Files */,
+				22C3E8E219136A48000035D1 /* Beer.h */,
+				22C3E8E319136A48000035D1 /* Beer.m */,
 			);
 			path = Cellarhq;
 			sourceTree = "<group>";
@@ -197,15 +200,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		22AA2B4D1900D633005140DA /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				22AA2B521900D633005140DA /* Hpple.app */,
-				22AA2B541900D633005140DA /* Test.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		22AA2B5719022684005140DA /* Masonry */ = {
 			isa = PBXGroup;
 			children = (
@@ -234,6 +228,19 @@
 			);
 			name = Masonry;
 			path = ../../../cellarhq/Masonry/Masonry;
+			sourceTree = "<group>";
+		};
+		22C3E8D619135F1F000035D1 /* Hpple */ = {
+			isa = PBXGroup;
+			children = (
+				22C3E8D719135F47000035D1 /* TFHpple.h */,
+				22C3E8D819135F47000035D1 /* TFHpple.m */,
+				22C3E8D919135F47000035D1 /* TFHppleElement.h */,
+				22C3E8DA19135F47000035D1 /* TFHppleElement.m */,
+				22C3E8DB19135F47000035D1 /* XPathQuery.h */,
+				22C3E8DC19135F47000035D1 /* XPathQuery.m */,
+			);
+			name = Hpple;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,12 +306,6 @@
 			mainGroup = 22AA2B081900D547005140DA;
 			productRefGroup = 22AA2B121900D547005140DA /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 22AA2B4D1900D633005140DA /* Products */;
-					ProjectRef = 22AA2B4C1900D633005140DA /* Hpple.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				22AA2B101900D547005140DA /* Cellarhq */,
@@ -312,23 +313,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		22AA2B521900D633005140DA /* Hpple.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = Hpple.app;
-			remoteRef = 22AA2B511900D633005140DA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		22AA2B541900D633005140DA /* Test.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = Test.app;
-			remoteRef = 22AA2B531900D633005140DA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		22AA2B0F1900D547005140DA /* Resources */ = {
@@ -362,11 +346,15 @@
 				22AA2B2E1900D547005140DA /* ViewController.m in Sources */,
 				22AA2B251900D547005140DA /* AppDelegate.m in Sources */,
 				22AA2B7119022684005140DA /* MASLayoutConstraint.m in Sources */,
+				22C3E8DF19135F47000035D1 /* XPathQuery.m in Sources */,
 				22AA2B211900D547005140DA /* main.m in Sources */,
+				22C3E8DE19135F47000035D1 /* TFHppleElement.m in Sources */,
 				22AA2B7619022684005140DA /* View+MASAdditions.m in Sources */,
 				22AA2B7219022684005140DA /* MASViewAttribute.m in Sources */,
 				22AA2B6F19022684005140DA /* MASConstraint.m in Sources */,
 				22AA2B7019022684005140DA /* MASConstraintMaker.m in Sources */,
+				22C3E8DD19135F47000035D1 /* TFHpple.m in Sources */,
+				22C3E8E419136A48000035D1 /* Beer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -490,7 +478,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT/../hpple",
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(SRCROOT)/Cellarhq/vendor/hpple",
 				);
 				INFOPLIST_FILE = "Cellarhq/Cellarhq-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -508,7 +497,8 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
-					"$(SRCROOT/../hpple",
+					"$(SDKROOT)/usr/include/libxml2",
+					"$(SRCROOT)/Cellarhq/vendor/hpple",
 				);
 				INFOPLIST_FILE = "Cellarhq/Cellarhq-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -575,6 +565,7 @@
 				22AA2B481900D547005140DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		22AA2B491900D547005140DA /* Build configuration list for PBXNativeTarget "CellarhqTests" */ = {
 			isa = XCConfigurationList;
@@ -583,6 +574,7 @@
 				22AA2B4B1900D547005140DA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
