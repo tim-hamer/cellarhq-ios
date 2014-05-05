@@ -1,43 +1,36 @@
-#import "ViewController.h"
+#import "CellarViewController.h"
 #import "TFHpple.h"
 #import "Beer.h"
+#import "BeerDetailViewController.h"
 
 
-@interface ViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface CellarViewController () <UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic) UILabel *label;
+//@property (nonatomic) UILabel *label;
 @property (nonatomic) UITableView *table;
 @property (nonatomic) NSArray *beers;
 
 @end
 
-@implementation ViewController
+@implementation CellarViewController
 
 - (instancetype) init {
     if (self = [super init]) {
-        
-        self.label = [[UILabel alloc] init];
-        [self.view addSubview:self.label];
         
         self.table = [[UITableView alloc] init];
         self.table.delegate = self;
         self.table.dataSource = self;
         [self.view addSubview:self.table];
         
-        [self.label makeConstraints:^(MASConstraintMaker *make) {
-            make.height.equalTo(@40);
-            make.centerX.equalTo(self.view.centerX);
-            make.top.equalTo(self.view.top).offset(20);
-        }];
-        
         [self.table makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.centerX);
             make.width.equalTo(self.view.width).offset(-50);
-            make.top.equalTo(self.label.bottom).offset(30);
+            make.top.equalTo(self.view.top);
             make.bottom.equalTo(self.view.bottom);
         }];
         
         self.view.backgroundColor = [UIColor whiteColor];
+        self.navigationItem.title = @"My Cellar";
     }
     return self;
 }
@@ -50,9 +43,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    self.label.text = @"My Cellar";
-    
 }
 
 - (NSArray *)beersInCellarWithName:(NSString *)cellarName {
@@ -107,6 +97,12 @@
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return self.beers.count;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    BeerDetailViewController *beerDetails = [[BeerDetailViewController alloc] initWithBeer:[self.beers objectAtIndex:indexPath.row]];
+    [self.navigationController pushViewController:beerDetails animated:YES];
+    [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }
 
 @end

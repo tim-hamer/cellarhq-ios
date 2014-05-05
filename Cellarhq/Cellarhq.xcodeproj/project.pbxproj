@@ -13,7 +13,7 @@
 		22AA2B1F1900D547005140DA /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 22AA2B1D1900D547005140DA /* InfoPlist.strings */; };
 		22AA2B211900D547005140DA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B201900D547005140DA /* main.m */; };
 		22AA2B251900D547005140DA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B241900D547005140DA /* AppDelegate.m */; };
-		22AA2B2E1900D547005140DA /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B2D1900D547005140DA /* ViewController.m */; };
+		22AA2B2E1900D547005140DA /* CellarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22AA2B2D1900D547005140DA /* CellarViewController.m */; };
 		22AA2B301900D547005140DA /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 22AA2B2F1900D547005140DA /* Images.xcassets */; };
 		22AA2B371900D547005140DA /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AA2B361900D547005140DA /* XCTest.framework */; };
 		22AA2B381900D547005140DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AA2B141900D547005140DA /* Foundation.framework */; };
@@ -34,6 +34,7 @@
 		22C3E8DE19135F47000035D1 /* TFHppleElement.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8DA19135F47000035D1 /* TFHppleElement.m */; };
 		22C3E8DF19135F47000035D1 /* XPathQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8DC19135F47000035D1 /* XPathQuery.m */; };
 		22C3E8E419136A48000035D1 /* Beer.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8E319136A48000035D1 /* Beer.m */; };
+		22C3E8E71916C9F1000035D1 /* BeerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,8 +58,8 @@
 		22AA2B221900D547005140DA /* Cellarhq-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Cellarhq-Prefix.pch"; sourceTree = "<group>"; };
 		22AA2B231900D547005140DA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		22AA2B241900D547005140DA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		22AA2B2C1900D547005140DA /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		22AA2B2D1900D547005140DA /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		22AA2B2C1900D547005140DA /* CellarViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CellarViewController.h; sourceTree = "<group>"; };
+		22AA2B2D1900D547005140DA /* CellarViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CellarViewController.m; sourceTree = "<group>"; };
 		22AA2B2F1900D547005140DA /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		22AA2B351900D547005140DA /* CellarhqTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CellarhqTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		22AA2B361900D547005140DA /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -96,6 +97,8 @@
 		22C3E8DC19135F47000035D1 /* XPathQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = XPathQuery.m; path = Cellarhq/vendor/hpple/XPathQuery.m; sourceTree = "<group>"; };
 		22C3E8E219136A48000035D1 /* Beer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Beer.h; sourceTree = "<group>"; };
 		22C3E8E319136A48000035D1 /* Beer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Beer.m; sourceTree = "<group>"; };
+		22C3E8E51916C9F1000035D1 /* BeerDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeerDetailViewController.h; sourceTree = "<group>"; };
+		22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeerDetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,12 +164,14 @@
 			children = (
 				22AA2B231900D547005140DA /* AppDelegate.h */,
 				22AA2B241900D547005140DA /* AppDelegate.m */,
-				22AA2B2C1900D547005140DA /* ViewController.h */,
-				22AA2B2D1900D547005140DA /* ViewController.m */,
+				22AA2B2C1900D547005140DA /* CellarViewController.h */,
+				22AA2B2D1900D547005140DA /* CellarViewController.m */,
 				22AA2B2F1900D547005140DA /* Images.xcassets */,
 				22AA2B1B1900D547005140DA /* Supporting Files */,
 				22C3E8E219136A48000035D1 /* Beer.h */,
 				22C3E8E319136A48000035D1 /* Beer.m */,
+				22C3E8E51916C9F1000035D1 /* BeerDetailViewController.h */,
+				22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */,
 			);
 			path = Cellarhq;
 			sourceTree = "<group>";
@@ -343,7 +348,7 @@
 				22AA2B7319022684005140DA /* MASViewConstraint.m in Sources */,
 				22AA2B6E19022684005140DA /* MASCompositeConstraint.m in Sources */,
 				22AA2B7419022684005140DA /* NSArray+MASAdditions.m in Sources */,
-				22AA2B2E1900D547005140DA /* ViewController.m in Sources */,
+				22AA2B2E1900D547005140DA /* CellarViewController.m in Sources */,
 				22AA2B251900D547005140DA /* AppDelegate.m in Sources */,
 				22AA2B7119022684005140DA /* MASLayoutConstraint.m in Sources */,
 				22C3E8DF19135F47000035D1 /* XPathQuery.m in Sources */,
@@ -351,6 +356,7 @@
 				22C3E8DE19135F47000035D1 /* TFHppleElement.m in Sources */,
 				22AA2B7619022684005140DA /* View+MASAdditions.m in Sources */,
 				22AA2B7219022684005140DA /* MASViewAttribute.m in Sources */,
+				22C3E8E71916C9F1000035D1 /* BeerDetailViewController.m in Sources */,
 				22AA2B6F19022684005140DA /* MASConstraint.m in Sources */,
 				22AA2B7019022684005140DA /* MASConstraintMaker.m in Sources */,
 				22C3E8DD19135F47000035D1 /* TFHpple.m in Sources */,

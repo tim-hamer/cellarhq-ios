@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import "ViewController.h"
+#import "CellarViewController.h"
 
 @implementation AppDelegate
 
@@ -10,9 +10,12 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     
-    ViewController *viewController = [[ViewController alloc] init];
+    CellarViewController *viewController = [[CellarViewController alloc] init];
+    UINavigationController *navigationController =
+            [[UINavigationController alloc] initWithRootViewController:viewController];
     
-    self.window.rootViewController = viewController;
+    [navigationController setNavigationBarHidden:NO];
+    self.window.rootViewController = navigationController;
     [self.window makeKeyAndVisible];
 
     return YES;
