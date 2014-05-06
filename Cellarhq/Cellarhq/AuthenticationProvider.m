@@ -31,8 +31,10 @@
     request.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
     request.allHTTPHeaderFields = headers;
     request.HTTPBody = [[self generateUrlEncodedStringFromParameters:parameters withParameterStringPrefix:nil] dataUsingEncoding:NSUTF8StringEncoding];
+    request.HTTPShouldHandleCookies = YES;
     
-    [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:YES];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
+    [connection start];
 }
 
 #pragma mark - NSURLConnectionDataDelegate

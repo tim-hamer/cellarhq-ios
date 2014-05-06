@@ -170,18 +170,11 @@
 			children = (
 				22AA2B231900D547005140DA /* AppDelegate.h */,
 				22AA2B241900D547005140DA /* AppDelegate.m */,
-				22AA2B2C1900D547005140DA /* CellarViewController.h */,
-				22AA2B2D1900D547005140DA /* CellarViewController.m */,
+				22C3E8F019188D21000035D1 /* Services */,
+				22C3E8EF19188CF9000035D1 /* Models */,
+				22C3E8EE19188CF0000035D1 /* ViewControllers */,
 				22AA2B2F1900D547005140DA /* Images.xcassets */,
 				22AA2B1B1900D547005140DA /* Supporting Files */,
-				22C3E8E219136A48000035D1 /* Beer.h */,
-				22C3E8E319136A48000035D1 /* Beer.m */,
-				22C3E8E51916C9F1000035D1 /* BeerDetailViewController.h */,
-				22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */,
-				22C3E8E819173C1D000035D1 /* LoginViewController.h */,
-				22C3E8E919173C1D000035D1 /* LoginViewController.m */,
-				22C3E8EB19173D03000035D1 /* AuthenticationProvider.h */,
-				22C3E8EC19173D03000035D1 /* AuthenticationProvider.m */,
 			);
 			path = Cellarhq;
 			sourceTree = "<group>";
@@ -256,6 +249,37 @@
 				22C3E8DC19135F47000035D1 /* XPathQuery.m */,
 			);
 			name = Hpple;
+			sourceTree = "<group>";
+		};
+		22C3E8EE19188CF0000035D1 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				22C3E8E51916C9F1000035D1 /* BeerDetailViewController.h */,
+				22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */,
+				22C3E8E819173C1D000035D1 /* LoginViewController.h */,
+				22C3E8E919173C1D000035D1 /* LoginViewController.m */,
+				22AA2B2C1900D547005140DA /* CellarViewController.h */,
+				22AA2B2D1900D547005140DA /* CellarViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		22C3E8EF19188CF9000035D1 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				22C3E8E219136A48000035D1 /* Beer.h */,
+				22C3E8E319136A48000035D1 /* Beer.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		22C3E8F019188D21000035D1 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				22C3E8EB19173D03000035D1 /* AuthenticationProvider.h */,
+				22C3E8EC19173D03000035D1 /* AuthenticationProvider.m */,
+			);
+			name = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

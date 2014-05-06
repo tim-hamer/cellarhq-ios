@@ -7,7 +7,7 @@
 @property (nonatomic) UILabel *beerLabel;
 @property (nonatomic) UILabel *breweryLabel;
 @property (nonatomic) UILabel *dateLabel;
-@property (nonatomic) UIActivityIndicatorView *quantitySpinner;
+@property (nonatomic) UILabel *quantityLabel;
 @property (nonatomic) UIButton *removeOneButton;
 
 // TODO: table of other vintages of the same beer in your cellar
@@ -24,12 +24,19 @@
         self.beerLabel = [[UILabel alloc] init];
         self.breweryLabel = [[UILabel alloc] init];
         self.dateLabel = [[UILabel alloc] init];
-        self.quantitySpinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.quantityLabel = [[UILabel alloc] init];
+        
+        self.removeOneButton = [UIButton buttonWithType:UIButtonTypeSystem];
+        [self.removeOneButton setTitle:@"Drink One" forState:UIControlStateNormal];
+        [self.removeOneButton addTarget:self
+                                 action:@selector(removeOneButtonPressed)
+                       forControlEvents:UIControlEventTouchUpInside];
         
         [self.view addSubview:self.beerLabel];
         [self.view addSubview:self.breweryLabel];
         [self.view addSubview:self.dateLabel];
-        [self.view addSubview:self.quantitySpinner];
+        [self.view addSubview:self.quantityLabel];
+        [self.view addSubview:self.removeOneButton];
         
         [self.beerLabel makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view.top).offset(60);
@@ -50,8 +57,14 @@
             make.left.equalTo(self.view).offset(20);
         }];
         
-        [self.quantitySpinner makeConstraints:^(MASConstraintMaker *make) {
+        [self.quantityLabel makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.dateLabel.bottom).offset(20);
+            make.left.equalTo(self.dateLabel.left);
+        }];
+        
+        [self.removeOneButton makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.quantityLabel.bottom).offset(30);
+            make.left.equalTo(self.quantityLabel.left);
         }];
         
         self.view.backgroundColor = [UIColor whiteColor];
@@ -66,6 +79,11 @@
     self.beerLabel.text = self.beer.name;
     self.breweryLabel.text = self.beer.brewery;
     self.dateLabel.text = self.beer.bottleDate;
+    self.quantityLabel.text = [NSString stringWithFormat:@"Quantity: %d", self.beer.quantity];
+}
+
+- (void)removeOneButtonPressed {
+    
 }
 
 

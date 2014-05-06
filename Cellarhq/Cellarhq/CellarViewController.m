@@ -37,19 +37,27 @@
 
 - (void)loadView {
     [super loadView];
-    
-    self.beers = [self beersInCellarWithName:@"hansmoleman"];
+    self.beers = [self beersInYourCellar];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 }
 
+- (NSArray *)beersInYourCellar {
+    NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar"];
+    NSData *urlData = [NSData dataWithContentsOfURL:url];
+    return [self parseBeersFromWebData:urlData];
+}
+
 - (NSArray *)beersInCellarWithName:(NSString *)cellarName {
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.cellarhq.com/cellar/%@", cellarName]];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
-    
-    TFHpple *parser = [TFHpple hppleWithHTMLData:urlData];
+    return [self parseBeersFromWebData:urlData];
+}
+
+- (NSArray *)parseBeersFromWebData:(NSData *)data {
+    TFHpple *parser = [TFHpple hppleWithHTMLData:data];
     
     NSString *tableRowQuery = @"//tbody/tr";
     NSArray *tableRows = [parser searchWithXPathQuery:tableRowQuery];
@@ -65,7 +73,7 @@
         
         TFHppleElement *quantityElement = [[tableRow searchWithXPathQuery:@"//td[@class='quantity']"] objectAtIndex:0];
         int quantity = [[quantityElement text] integerValue];
-
+        
         NSArray *dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date']"];
         if (dateCellSearchResults.count == 0) {
             dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date notes-icon']"];

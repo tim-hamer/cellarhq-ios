@@ -63,6 +63,10 @@
         
         self.navigationItem.title = @"Login";
         self.view.backgroundColor = [UIColor whiteColor];
+        
+        // TODO: automatic login if cookie is still valid
+        self.usernameField.text = @"hamer.tim@gmail.com";
+        self.passwordField.text = @"reaper";
     }
 
     return self;
