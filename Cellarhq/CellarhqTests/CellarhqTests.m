@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import "AuthenticationProvider.h"
 
 @interface CellarhqTests : XCTestCase
 
@@ -26,9 +27,24 @@
     [super tearDown];
 }
 
-- (void)testExample
-{
-    XCTFail(@"No implementation for \"%s\"", __PRETTY_FUNCTION__);
+- (void)testLoginSuccess {
+    AuthenticationProvider *testObject = [[AuthenticationProvider alloc] init];
+    
+    NSString *username = @"hamer.tim@gmail.com";
+    NSString *password = @"reaper";
+    BOOL status = [testObject loginWithUsername:username password:password];
+    
+    XCTAssertTrue(status);
+}
+
+- (void)testLoginFail {
+    AuthenticationProvider *testObject = [[AuthenticationProvider alloc] init];
+    
+    NSString *username = @"blah";
+    NSString *password = @"blah";
+    BOOL status = [testObject loginWithUsername:username password:password];
+    
+    XCTAssertFalse(status);
 }
 
 @end

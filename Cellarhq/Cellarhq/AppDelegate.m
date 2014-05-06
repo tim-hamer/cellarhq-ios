@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import "CellarViewController.h"
+#import "LoginViewController.h"
 
 @implementation AppDelegate
 
@@ -10,7 +10,7 @@
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
 
     
-    CellarViewController *viewController = [[CellarViewController alloc] init];
+    LoginViewController *viewController = [[LoginViewController alloc] init];
     UINavigationController *navigationController =
             [[UINavigationController alloc] initWithRootViewController:viewController];
     
