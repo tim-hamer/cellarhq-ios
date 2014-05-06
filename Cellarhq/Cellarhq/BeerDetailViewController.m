@@ -1,4 +1,5 @@
 #import "BeerDetailViewController.h"
+#import "NetworkRequestHandler.h"
 
 @interface BeerDetailViewController ()
 
@@ -83,7 +84,45 @@
 }
 
 - (void)removeOneButtonPressed {
-    
+    if (self.beer.quantity == 1) {
+        [self deleteBeer];
+    } else {
+        [self updateBeerQuantity:self.beer.quantity newQuantity:(self.beer.quantity - 1)];
+    }
+}
+
+- (void)deleteBeer {
+    NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
+    NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/delete"];
+    NSDictionary *parameters = @{@"id":self.beer.uniqueId, @"beerId":self.beer.beerId, @"beer":self.beer.name, @"breweryId":self.beer.breweryId, @"brewery":self.beer.brewery};
+    [network handleHttpPostRequestWithUrl:url
+                               parameters:parameters
+                               onComplete:^(NSInteger statusCode, NSError *error) {
+                                   [self.navigationController popViewControllerAnimated:YES];
+                                   NSLog(@"Deleted beer");
+                               }];
+}
+
+- (void)updateBeerQuantity:(NSInteger)oldQuantity newQuantity:(NSInteger)newQuantity {
+    NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
+    NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
+    NSDictionary *parameters = @{@"id":self.beer.uniqueId,
+                                 @"beerId":self.beer.beerId,
+                                 @"beer":self.beer.name,
+                                 @"breweryId":self.beer.breweryId,
+                                 @"brewery":self.beer.brewery,
+                                 @"_action":@"update",
+                                 @"quantity":[NSString stringWithFormat:@"%d", newQuantity],
+                                 @"originalQuantity":[NSString stringWithFormat:@"%d", oldQuantity],
+                                 @"size":self.beer.size,
+                                 @"bottleDate":self.beer.bottleDate,
+                                 @"notes":self.beer.notes};
+    [network handleHttpPostRequestWithUrl:url
+                               parameters:parameters
+                               onComplete:^(NSInteger statusCode, NSError *error) {
+                                   // TODO: update UI with new beer quantity
+                                   [self.navigationController popViewControllerAnimated:YES];
+                               }];
 }
 
 

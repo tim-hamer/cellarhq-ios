@@ -7,6 +7,8 @@
 @property (nonatomic) NSString *year;
 @property (nonatomic) int quantity;
 @property (nonatomic) NSString *bottleDate;
+@property (nonatomic) NSString *size;
+@property (nonatomic) NSString *notes;
 
 
 @property (nonatomic) NSString *uniqueId;

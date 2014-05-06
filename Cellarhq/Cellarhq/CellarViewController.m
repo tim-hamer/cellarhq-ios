@@ -44,6 +44,13 @@
     [super viewDidLoad];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    
+    self.beers = [self beersInYourCellar];
+    [self.table reloadData];
+}
+
 - (NSArray *)beersInYourCellar {
     NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar"];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
@@ -76,6 +83,9 @@
         TFHppleElement *beerElement = [[tableRow searchWithXPathQuery:@"//td[@class='beer']/a"] objectAtIndex:0];
         NSString *beerName = [beerElement text];
         
+        TFHppleElement *sizeElement = [[tableRow searchWithXPathQuery:@"//td[@class='size']"] objectAtIndex:0];
+        NSString *size = [sizeElement text];
+        
         TFHppleElement *quantityElement = [[tableRow searchWithXPathQuery:@"//td[@class='quantity']"] objectAtIndex:0];
         int quantity = [[quantityElement text] integerValue];
         
@@ -89,6 +99,7 @@
         Beer *beer = [[Beer alloc] init];
         beer.name = beerName;
         beer.brewery = breweryName;
+        beer.size = size;
         beer.quantity = quantity;
         beer.bottleDate = date;
         beer.uniqueId = uniqueId;

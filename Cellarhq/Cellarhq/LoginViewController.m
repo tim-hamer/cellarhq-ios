@@ -66,7 +66,7 @@
         
         // TODO: automatic login if cookie is still valid
         self.usernameField.text = @"hamer.tim@gmail.com";
-        self.passwordField.text = @"reaper";
+        self.passwordField.text = @"********";
     }
 
     return self;
