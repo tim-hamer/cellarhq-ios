@@ -8,4 +8,9 @@
 @property (nonatomic) int quantity;
 @property (nonatomic) NSString *bottleDate;
 
+
+@property (nonatomic) NSString *uniqueId;
+@property (nonatomic) NSString *beerId;
+@property (nonatomic) NSString *breweryId;
+
 @end

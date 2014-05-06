@@ -65,6 +65,11 @@
     NSMutableArray *beers = [NSMutableArray array];
     
     for (TFHppleElement *tableRow in tableRows) {
+        NSDictionary *attributes = tableRow.attributes;
+        NSString *uniqueId = [attributes[@"id"] substringFromIndex:5];
+        NSString *beerId = attributes[@"data-beerid"];
+        NSString *breweryId = attributes[@"data-breweryid"];
+        
         TFHppleElement *breweryElement = [[tableRow searchWithXPathQuery:@"//td[@class='brewery']/a"] objectAtIndex:0];
         NSString *breweryName = [breweryElement text];
         
@@ -79,14 +84,17 @@
             dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date notes-icon']"];
         }
         TFHppleElement *dateElement = [dateCellSearchResults objectAtIndex:0];
-        NSString *date = [[dateElement text] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        NSString *year = [date substringToIndex:4];
-        
+        NSString *date = [[dateElement text]
+                          stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
         Beer *beer = [[Beer alloc] init];
-        beer.name = [NSString stringWithFormat:@"%@ %@", year, beerName];
+        beer.name = beerName;
         beer.brewery = breweryName;
         beer.quantity = quantity;
         beer.bottleDate = date;
+        beer.uniqueId = uniqueId;
+        beer.beerId = beerId;
+        beer.breweryId = breweryId;
+        
         [beers addObject:beer];
     }
     return beers;
@@ -97,7 +105,9 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cellarhq"];
     Beer *beer = (Beer *)[self.beers objectAtIndex:indexPath.row];
-    cell.textLabel.text = beer.name;
+
+    NSString *year = [beer.bottleDate substringToIndex:4];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", year, beer.name];
     cell.detailTextLabel.text = beer.brewery;
     
     return cell;

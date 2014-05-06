@@ -37,6 +37,7 @@
 		22C3E8E71916C9F1000035D1 /* BeerDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8E61916C9F1000035D1 /* BeerDetailViewController.m */; };
 		22C3E8EA19173C1D000035D1 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8E919173C1D000035D1 /* LoginViewController.m */; };
 		22C3E8ED19173D03000035D1 /* AuthenticationProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8EC19173D03000035D1 /* AuthenticationProvider.m */; };
+		22C3E8F319189273000035D1 /* NetworkRequestHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 22C3E8F219189273000035D1 /* NetworkRequestHandler.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -105,6 +106,8 @@
 		22C3E8E919173C1D000035D1 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
 		22C3E8EB19173D03000035D1 /* AuthenticationProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthenticationProvider.h; sourceTree = "<group>"; };
 		22C3E8EC19173D03000035D1 /* AuthenticationProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthenticationProvider.m; sourceTree = "<group>"; };
+		22C3E8F119189273000035D1 /* NetworkRequestHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkRequestHandler.h; sourceTree = "<group>"; };
+		22C3E8F219189273000035D1 /* NetworkRequestHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkRequestHandler.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,6 +281,8 @@
 			children = (
 				22C3E8EB19173D03000035D1 /* AuthenticationProvider.h */,
 				22C3E8EC19173D03000035D1 /* AuthenticationProvider.m */,
+				22C3E8F119189273000035D1 /* NetworkRequestHandler.h */,
+				22C3E8F219189273000035D1 /* NetworkRequestHandler.m */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -393,6 +398,7 @@
 				22C3E8E71916C9F1000035D1 /* BeerDetailViewController.m in Sources */,
 				22AA2B6F19022684005140DA /* MASConstraint.m in Sources */,
 				22C3E8EA19173C1D000035D1 /* LoginViewController.m in Sources */,
+				22C3E8F319189273000035D1 /* NetworkRequestHandler.m in Sources */,
 				22AA2B7019022684005140DA /* MASConstraintMaker.m in Sources */,
 				22C3E8ED19173D03000035D1 /* AuthenticationProvider.m in Sources */,
 				22C3E8DD19135F47000035D1 /* TFHpple.m in Sources */,
