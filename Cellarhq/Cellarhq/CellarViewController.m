@@ -2,6 +2,7 @@
 #import "TFHpple.h"
 #import "Beer.h"
 #import "BeerDetailViewController.h"
+#import "NetworkRequestHandler.h"
 
 
 @interface CellarViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -31,6 +32,7 @@
         
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationItem.title = @"My Cellar";
+        self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addBeer)];
     }
     return self;
 }
@@ -61,6 +63,13 @@
     NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.cellarhq.com/cellar/%@", cellarName]];
     NSData *urlData = [NSData dataWithContentsOfURL:url];
     return [self parseBeersFromWebData:urlData];
+}
+
+- (void)addBeer {
+    Beer *newBeer = [[Beer alloc] init];
+    BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:newBeer];
+    viewController.editMode = YES;
+    [self.navigationController pushViewController:viewController animated:YES];
 }
 
 - (NSArray *)parseBeersFromWebData:(NSData *)data {

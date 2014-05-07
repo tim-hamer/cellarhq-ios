@@ -11,6 +11,8 @@
 
 @interface BeerDetailViewController : UIViewController
 
+@property (nonatomic) BOOL editMode;
+
 - (id)initWithBeer:(Beer *)beer;
 
 @end
