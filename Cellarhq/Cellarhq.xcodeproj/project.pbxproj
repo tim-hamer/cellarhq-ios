@@ -174,6 +174,7 @@
 		22AA2B1A1900D547005140DA /* Cellarhq */ = {
 			isa = PBXGroup;
 			children = (
+				22C3E8F7191B3E86000035D1 /* Views */,
 				22AA2B231900D547005140DA /* AppDelegate.h */,
 				22AA2B241900D547005140DA /* AppDelegate.m */,
 				22C3E8F019188D21000035D1 /* Services */,
@@ -181,8 +182,6 @@
 				22C3E8EE19188CF0000035D1 /* ViewControllers */,
 				22AA2B2F1900D547005140DA /* Images.xcassets */,
 				22AA2B1B1900D547005140DA /* Supporting Files */,
-				22C3E8F41919EB28000035D1 /* BeerSizePicker.h */,
-				22C3E8F51919EB28000035D1 /* BeerSizePicker.m */,
 			);
 			path = Cellarhq;
 			sourceTree = "<group>";
@@ -290,6 +289,15 @@
 				22C3E8F219189273000035D1 /* NetworkRequestHandler.m */,
 			);
 			name = Services;
+			sourceTree = "<group>";
+		};
+		22C3E8F7191B3E86000035D1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				22C3E8F41919EB28000035D1 /* BeerSizePicker.h */,
+				22C3E8F51919EB28000035D1 /* BeerSizePicker.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

@@ -1,7 +1,8 @@
 #import "BeerDetailViewController.h"
 #import "NetworkRequestHandler.h"
+#import "BeerSizePicker.h"
 
-@interface BeerDetailViewController ()
+@interface BeerDetailViewController () <BeerSizePickerDelegate>
 
 @property (nonatomic) Beer *beer;
 
@@ -9,7 +10,8 @@
 @property (nonatomic) UITextField *breweryField;
 @property (nonatomic) UITextField *dateField;
 @property (nonatomic) UITextField *quantityField;
-@property (nonatomic) UIPickerView *sizePicker;
+@property (nonatomic) UILabel *sizeLabel;
+@property (nonatomic) BeerSizePicker *sizePicker;
 @property (nonatomic) UIButton *removeOneButton;
 @property (nonatomic) UIButton *saveButton;
 
@@ -29,6 +31,9 @@
         self.dateField = [[UITextField alloc] init];
         UILabel *quantityLabel = [[UILabel alloc] init];
         self.quantityField = [[UITextField alloc] init];
+        self.sizeLabel = [[UILabel alloc] init];
+        self.sizePicker = [[BeerSizePicker alloc] init];
+        self.sizePicker.hidden = YES;
         
         self.removeOneButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [self.removeOneButton setTitle:@"Drink One" forState:UIControlStateNormal];
@@ -47,6 +52,8 @@
         [self.view addSubview:self.dateField];
         [self.view addSubview:quantityLabel];
         [self.view addSubview:self.quantityField];
+        [self.view addSubview:self.sizeLabel];
+        [self.view addSubview:self.sizePicker];
         [self.view addSubview:self.removeOneButton];
         [self.view addSubview:self.saveButton];
         
@@ -70,13 +77,18 @@
             make.width.equalTo(@100);
         }];
         
-        [quantityLabel makeConstraints:^(MASConstraintMaker *make) {
+        [self.sizeLabel makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.dateField.bottom).offset(20);
             make.left.equalTo(self.dateField.left);
         }];
         
+        [quantityLabel makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.sizeLabel.bottom).offset(20);
+            make.left.equalTo(self.sizeLabel.left);
+        }];
+        
         [self.quantityField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.dateField.bottom).offset(20);
+            make.top.equalTo(self.sizePicker.bottom).offset(20);
             make.left.equalTo(quantityLabel.right).offset(10);
             make.width.equalTo(@60);
         }];
@@ -89,6 +101,11 @@
         [self.saveButton makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.quantityField.bottom).offset(30);
             make.left.equalTo(quantityLabel.left);
+        }];
+        
+        [self.sizePicker makeConstraints:^(MASConstraintMaker *make) {
+            make.bottom.equalTo(self.view.bottom);
+            make.centerX.equalTo(self.view.centerX);
         }];
 
         self.view.backgroundColor = [UIColor whiteColor];
@@ -105,7 +122,12 @@
     self.beerField.text = self.beer.name;
     self.breweryField.text = self.beer.brewery;
     self.dateField.text = self.beer.bottleDate;
-    self.quantityField.text = [NSString stringWithFormat:@"Quantity: %d", self.beer.quantity];
+    self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity];
+    self.sizeLabel.text = [NSString stringWithFormat:@"%@", self.beer.size ?: @"Select a Size"];
+    self.sizeLabel.userInteractionEnabled = YES;
+    UIGestureRecognizer *touchRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showSizePicker)];
+    [self.sizeLabel addGestureRecognizer:touchRecognizer];
+    self.sizePicker.delegate = self;
 }
 
 -(void)setEditMode:(BOOL)editMode {
@@ -122,6 +144,12 @@
         self.breweryField.borderStyle = UITextBorderStyleBezel;
         self.quantityField.borderStyle = UITextBorderStyleBezel;
         self.dateField.borderStyle = UITextBorderStyleBezel;
+        
+        
+        self.beerField.placeholder = @"Beer";
+        self.breweryField.placeholder = @"Brewery";
+        self.dateField.placeholder = @"Bottle Date";
+        
     } else {
         self.removeOneButton.hidden = NO;
         self.saveButton.hidden = YES;
@@ -174,6 +202,10 @@
 
 }
 
+- (void)showSizePicker {
+    self.sizePicker.hidden = NO;
+}
+
 - (void)deleteBeer {
     NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
     NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/delete"];
@@ -206,6 +238,14 @@
                                    // TODO: update UI with new beer quantity
                                    [self.navigationController popViewControllerAnimated:YES];
                                }];
+}
+
+#pragma mark - BeerSizePickerDelegate
+
+- (void)sizeSelected:(NSString *)size {
+    self.beer.size = size;
+    self.sizeLabel.text = size;
+    self.sizePicker.hidden = YES;
 }
 
 

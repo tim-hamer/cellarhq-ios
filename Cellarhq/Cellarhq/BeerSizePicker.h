@@ -8,6 +8,14 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BeerSizePicker : UIPickerView
+@protocol BeerSizePickerDelegate
+
+- (void)sizeSelected:(NSString *)size;
+
+@end
+
+@interface BeerSizePicker : UIView
+
+@property (nonatomic, weak) id<BeerSizePickerDelegate> delegate;
 
 @end
