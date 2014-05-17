@@ -63,30 +63,42 @@
         
         self.navigationItem.title = @"Login";
         self.view.backgroundColor = [UIColor whiteColor];
-        
-        // TODO: automatic login if cookie is still valid
-        self.usernameField.text = @"hamer.tim@gmail.com";
-        self.passwordField.text = @"********";
     }
 
     return self;
 }
 
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
 
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        if ([cookie.name isEqualToString:@"_token"]) {
+            NSLog(@"expiration date: %@", cookie.expiresDate);
+            NSLog(@"current date: %@", [NSDate dateWithTimeIntervalSinceNow:0]);
+            if ([cookie.expiresDate compare:[NSDate dateWithTimeIntervalSinceNow:0]] == NSOrderedDescending) {
+                NSLog(@"login success");
+                [self loginSuccess];
+            } else {
+                NSLog(@"cookie expired");
+            }
+        }
+    }
 }
 
 - (void)loginButtonPressed {
     AuthenticationProvider *authProvider = [[AuthenticationProvider alloc] init];
     [authProvider loginWithUsername:self.usernameField.text password:self.passwordField.text onComplete:^(BOOL success) {
         if (success) {
-            CellarViewController *cellarViewController = [[CellarViewController alloc] init];
-            [self.navigationController pushViewController:cellarViewController animated:YES];
+            [self loginSuccess];
         } else {
             NSLog(@"Failed to authenticate");
         }
     }];
+}
+
+- (void)loginSuccess {
+    CellarViewController *cellarViewController = [[CellarViewController alloc] init];
+    [self.navigationController pushViewController:cellarViewController animated:YES];
 }
 
 @end

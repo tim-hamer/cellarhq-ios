@@ -1,6 +1,12 @@
 #import "AppDelegate.h"
 #import "LoginViewController.h"
 
+@interface AppDelegate ()
+
+@property (nonatomic) UINavigationController *navigationController;
+@end
+
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -11,11 +17,10 @@
 
     
     LoginViewController *viewController = [[LoginViewController alloc] init];
-    UINavigationController *navigationController =
-            [[UINavigationController alloc] initWithRootViewController:viewController];
+    self.navigationController = [[UINavigationController alloc] initWithRootViewController:viewController];
     
-    [navigationController setNavigationBarHidden:NO];
-    self.window.rootViewController = navigationController;
+    [self.navigationController setNavigationBarHidden:NO];
+    self.window.rootViewController = self.navigationController;
     [self.window makeKeyAndVisible];
 
     return YES;

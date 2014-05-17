@@ -88,7 +88,7 @@
         }];
         
         [self.quantityField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.sizePicker.bottom).offset(20);
+            make.top.equalTo(self.sizeLabel.bottom).offset(20);
             make.left.equalTo(quantityLabel.right).offset(10);
             make.width.equalTo(@60);
         }];
@@ -100,7 +100,7 @@
 
         [self.saveButton makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.quantityField.bottom).offset(30);
-            make.left.equalTo(quantityLabel.left);
+            make.left.equalTo(self.removeOneButton.right).offset(50);
         }];
         
         [self.sizePicker makeConstraints:^(MASConstraintMaker *make) {
@@ -236,7 +236,9 @@
                                parameters:parameters
                                onComplete:^(NSInteger statusCode, NSError *error) {
                                    // TODO: update UI with new beer quantity
-                                   [self.navigationController popViewControllerAnimated:YES];
+                                   self.beer.quantity = newQuantity;
+                                   self.quantityField.text = [NSString stringWithFormat:@"%d", newQuantity];
+//                                   [self.navigationController popViewControllerAnimated:YES];
                                }];
 }
 
