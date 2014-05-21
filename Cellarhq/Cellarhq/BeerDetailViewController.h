@@ -13,6 +13,6 @@
 
 @property (nonatomic) BOOL editMode;
 
-- (id)initWithBeer:(Beer *)beer;
+- (id)initWithBeer:(Beer *)beer editing:(BOOL)editing;
 
 @end

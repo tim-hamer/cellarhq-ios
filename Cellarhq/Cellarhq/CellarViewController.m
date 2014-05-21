@@ -67,8 +67,7 @@
 
 - (void)addBeer {
     Beer *newBeer = [[Beer alloc] init];
-    BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:newBeer];
-    viewController.editMode = YES;
+    BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:newBeer editing:YES];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
@@ -138,7 +137,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BeerDetailViewController *beerDetails = [[BeerDetailViewController alloc] initWithBeer:[self.beers objectAtIndex:indexPath.row]];
+    BeerDetailViewController *beerDetails = [[BeerDetailViewController alloc] initWithBeer:[self.beers objectAtIndex:indexPath.row] editing:NO];
     [self.navigationController pushViewController:beerDetails animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
 }

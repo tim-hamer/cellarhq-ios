@@ -2,13 +2,14 @@
 #import "NetworkRequestHandler.h"
 #import "BeerSizePicker.h"
 
-@interface BeerDetailViewController () <BeerSizePickerDelegate>
+@interface BeerDetailViewController () <BeerSizePickerDelegate, UITextFieldDelegate>
 
 @property (nonatomic) Beer *beer;
-
+@property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UITextField *beerField;
 @property (nonatomic) UITextField *breweryField;
 @property (nonatomic) UITextField *dateField;
+@property (nonatomic) UILabel *quantityLabel;
 @property (nonatomic) UITextField *quantityField;
 @property (nonatomic) UILabel *sizeLabel;
 @property (nonatomic) BeerSizePicker *sizePicker;
@@ -26,122 +27,23 @@
 
 @implementation BeerDetailViewController
 
-- (id)initWithBeer:(Beer *)beer {
+- (id)initWithBeer:(Beer *)beer editing:(BOOL)editing {
     if (self = [super init]) {
         self.beer = beer;
+        self.editMode = editing;
         
         self.beerField = [[UITextField alloc] init];
         self.breweryField = [[UITextField alloc] init];
         self.dateField = [[UITextField alloc] init];
-        UILabel *quantityLabel = [[UILabel alloc] init];
-        quantityLabel.text = @"Quantity: ";
+        self.quantityLabel = [[UILabel alloc] init];
+        self.quantityLabel.text = @"Quantity: ";
         self.quantityField = [[UITextField alloc] init];
         self.sizeLabel = [[UILabel alloc] init];
         self.sizePicker = [[BeerSizePicker alloc] init];
         self.sizePicker.hidden = YES;
         
-        self.removeOneButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.removeOneButton setTitle:@"Drink One" forState:UIControlStateNormal];
-        [self.removeOneButton addTarget:self
-                                 action:@selector(removeOneButtonPressed)
-                       forControlEvents:UIControlEventTouchUpInside];
-
-        self.saveButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
-        [self.saveButton addTarget:self
-                                 action:@selector(saveButtonPressed)
-                       forControlEvents:UIControlEventTouchUpInside];
-
-        self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
-        [self.cancelButton addTarget:self
-                            action:@selector(cancelButtonPressed)
-                  forControlEvents:UIControlEventTouchUpInside];
-
-        self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
-        [self.editButton addTarget:self
-                            action:@selector(editButtonPressed)
-                  forControlEvents:UIControlEventTouchUpInside];
-
-
-        [self.view addSubview:self.beerField];
-        [self.view addSubview:self.breweryField];
-        [self.view addSubview:self.dateField];
-        [self.view addSubview:quantityLabel];
-        [self.view addSubview:self.quantityField];
-        [self.view addSubview:self.sizeLabel];
-        [self.view addSubview:self.sizePicker];
-        [self.view addSubview:self.removeOneButton];
-        [self.view addSubview:self.saveButton];
-        [self.view addSubview:self.cancelButton];
-        [self.view addSubview:self.editButton];
-        
-        [self.editButton makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.top).offset(70);
-            make.right.equalTo(self.view.right).offset(-10);
-        }];
-        
-        [self.breweryField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.editButton.bottom).offset(10);
-            make.width.equalTo(self.view.width).offset(-40);
-            make.centerX.equalTo(self.view.centerX);
-            make.height.equalTo(@30);
-        }];
-        
-        [self.beerField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.breweryField.bottom).offset(10);
-            make.centerX.equalTo(self.view.centerX);
-            make.width.equalTo(self.view.width).offset(-40);
-            make.height.equalTo(@30);
-        }];
-        
-        [self.dateField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.beerField.bottom).offset(20);
-            make.left.equalTo(self.view).offset(20);
-            make.width.equalTo(@100);
-        }];
-        
-        [self.sizeLabel makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.dateField.bottom).offset(20);
-            make.left.equalTo(self.dateField.left);
-        }];
-        
-        [quantityLabel makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.sizeLabel.bottom).offset(20);
-            make.left.equalTo(self.sizeLabel.left);
-        }];
-        
-        [self.quantityField makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.sizeLabel.bottom).offset(20);
-            make.left.equalTo(quantityLabel.right).offset(10);
-            make.width.equalTo(@60);
-        }];
-        
-        [self.removeOneButton makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.quantityField.bottom).offset(30);
-            make.left.equalTo(quantityLabel.left);
-        }];
-
-        [self.saveButton makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.quantityField.bottom).offset(30);
-            make.left.equalTo(self.removeOneButton.left);
-        }];
-        
-        [self.cancelButton makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.saveButton.top);
-            make.left.equalTo(self.saveButton.right).offset(30);
-        }];
-        
-        [self.sizePicker makeConstraints:^(MASConstraintMaker *make) {
-            make.bottom.equalTo(self.view.bottom);
-            make.centerX.equalTo(self.view.centerX);
-        }];
-
-        self.view.backgroundColor = [UIColor whiteColor];
-        self.navigationItem.title = beer.name;
-        
-        self.editMode = NO;
+        self.sizeLabelTouchRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                                action:@selector(showSizePicker)];
     }
     return self;
 }
@@ -149,18 +51,125 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    self.removeOneButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.removeOneButton setTitle:@"Drink One" forState:UIControlStateNormal];
+    [self.removeOneButton addTarget:self
+                             action:@selector(removeOneButtonPressed)
+                   forControlEvents:UIControlEventTouchUpInside];
+    
+    self.saveButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.saveButton setTitle:@"Save" forState:UIControlStateNormal];
+    [self.saveButton addTarget:self
+                        action:@selector(saveButtonPressed)
+              forControlEvents:UIControlEventTouchUpInside];
+    
+    self.cancelButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.cancelButton setTitle:@"Cancel" forState:UIControlStateNormal];
+    [self.cancelButton addTarget:self
+                          action:@selector(cancelButtonPressed)
+                forControlEvents:UIControlEventTouchUpInside];
+    
+    self.editButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
+    [self.editButton addTarget:self
+                        action:@selector(editButtonPressed)
+              forControlEvents:UIControlEventTouchUpInside];
+    
+    self.scrollView = [[UIScrollView alloc] init];
+    [self.view addSubview:self.scrollView];
+    [self.scrollView makeConstraints:^(MASConstraintMaker *make) {
+        make.edges.equalTo(self.view);
+    }];
+    
+    [self.scrollView addSubview:self.beerField];
+    [self.scrollView addSubview:self.breweryField];
+    [self.scrollView addSubview:self.dateField];
+    [self.scrollView addSubview:self.quantityLabel];
+    [self.scrollView addSubview:self.quantityField];
+    [self.scrollView addSubview:self.sizeLabel];
+    [self.scrollView addSubview:self.sizePicker];
+    [self.scrollView addSubview:self.removeOneButton];
+    [self.scrollView addSubview:self.saveButton];
+    [self.scrollView addSubview:self.cancelButton];
+    [self.scrollView addSubview:self.editButton];
+    
+    [self.editButton makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.scrollView.top).offset(10);
+        make.right.equalTo(self.view.right).offset(-10);
+    }];
+    
+    [self.breweryField makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.editButton.bottom).offset(10);
+        make.width.equalTo(self.view.width).offset(-40);
+        make.centerX.equalTo(self.view.centerX);
+        make.height.equalTo(@30);
+    }];
+    
+    [self.beerField makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.breweryField.bottom).offset(10);
+        make.centerX.equalTo(self.scrollView.centerX);
+        make.width.equalTo(self.view.width).offset(-40);
+        make.height.equalTo(@30);
+    }];
+    
+    [self.dateField makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.beerField.bottom).offset(20);
+        make.left.equalTo(self.scrollView).offset(20);
+        make.width.equalTo(@130);
+    }];
+    
+    [self.sizeLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.dateField.bottom).offset(20);
+        make.left.equalTo(self.dateField.left);
+    }];
+    
+    [self.quantityLabel makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.sizeLabel.bottom).offset(20);
+        make.left.equalTo(self.sizeLabel.left);
+    }];
+    
+    [self.quantityField makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.sizeLabel.bottom).offset(20);
+        make.left.equalTo(self.quantityLabel.right).offset(10);
+        make.width.equalTo(@60);
+    }];
+    
+    [self.removeOneButton makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.quantityField.bottom).offset(30);
+        make.left.equalTo(self.quantityLabel.left);
+    }];
+    
+    [self.saveButton makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.quantityField.bottom).offset(30);
+        make.left.equalTo(self.removeOneButton.left);
+    }];
+    
+    [self.cancelButton makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.saveButton.top);
+        make.left.equalTo(self.saveButton.right).offset(30);
+    }];
+    
+    [self.sizePicker makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view.bottom);
+        make.centerX.equalTo(self.view.centerX);
+    }];
+    
+    self.view.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.title = self.beer.name;
+    
     self.beerField.text = self.beer.name;
     self.breweryField.text = self.beer.brewery;
     self.dateField.text = self.beer.bottleDate;
     self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity];
-    self.sizeLabel.text = [NSString stringWithFormat:@"%@", self.beer.size ?: @"Select a Size"];
+    self.sizeLabel.text = [NSString stringWithFormat:@"%@", self.beer.size ?: @"< Select a Size >"];
     self.sizeLabel.userInteractionEnabled = YES;
-    self.sizeLabelTouchRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showSizePicker)];
     self.sizePicker.delegate = self;
+    
+    [self enableEditing:self.editMode];
 }
 
--(void)setEditMode:(BOOL)editMode {
-    if (editMode) {
+- (void)enableEditing:(BOOL)editing {
+    if (editing) {
         self.removeOneButton.hidden = YES;
         self.saveButton.hidden = NO;
         self.cancelButton.hidden = NO;
@@ -180,7 +189,6 @@
         self.beerField.placeholder = @"Beer";
         self.breweryField.placeholder = @"Brewery";
         self.dateField.placeholder = @"Bottle Date";
-        
     } else {
         self.removeOneButton.hidden = NO;
         self.saveButton.hidden = YES;
@@ -199,12 +207,15 @@
     }
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+}
 - (void)editButtonPressed {
-    self.editMode = YES;
+    [self enableEditing:YES];
 }
 
 - (void)cancelButtonPressed {
-    self.editMode = NO;
+    [self enableEditing:NO];
     self.breweryField.text = self.beer.brewery;
     self.beerField.text = self.beer.name;
     self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity];
@@ -220,11 +231,13 @@
 }
 
 - (void)saveButtonPressed {
-    self.beer = [[Beer alloc] init];
-    self.beer.name = self.beerField.text;
-    self.beer.brewery = self.breweryField.text;
-    self.beer.quantity = [self.quantityField.text intValue];
-    self.beer.bottleDate = self.dateField.text;
+    Beer *newBeer = self.beer;
+    newBeer.name = self.beerField.text;
+    newBeer.brewery = self.breweryField.text;
+    newBeer.size = self.sizeLabel.text;
+    newBeer.quantity = [self.quantityField.text intValue];
+    newBeer.bottleDate = self.dateField.text;
+    self.beer = newBeer;
     NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
     NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
     NSDictionary *parameters = @{@"beerId":self.beer.beerId,
@@ -236,18 +249,22 @@
 //                                 @"originalQuantity":[NSString stringWithFormat:@"%d", oldQuantity],
                                  @"size":self.beer.size,
                                  @"bottleDate":self.beer.bottleDate,
-                                 @"notes":self.beer.notes};
+                                 @"notes":self.beer.notes ?: @""};
     [network handleHttpPostRequestWithUrl:url
                                parameters:parameters
                                onComplete:^(NSInteger statusCode, NSError *error) {
                                    if (!error) {
-                                       self.editMode = NO;
+                                       [self enableEditing:NO];
                                    }
                                }];
 
 }
 
 - (void)showSizePicker {
+    [self.breweryField endEditing:YES];
+    [self.beerField endEditing:YES];
+    [self.quantityField endEditing:YES];
+    [self.dateField endEditing:YES];
     self.sizePicker.hidden = NO;
 }
 
@@ -292,6 +309,14 @@
     self.beer.size = size;
     self.sizeLabel.text = size;
     self.sizePicker.hidden = YES;
+}
+
+#pragma mark - UITextFieldDelegate
+
+// TODO: use this later if we need to scroll to fit editable views above keyboard
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+    CGRect frame = textField.frame;
+    [self.scrollView setContentOffset:CGPointMake(0, frame.origin.y - 70) animated:YES];
 }
 
 
