@@ -66,8 +66,7 @@
 }
 
 - (void)addBeer {
-    Beer *newBeer = [[Beer alloc] init];
-    BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:newBeer editing:YES];
+    BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:nil editing:YES];
     [self.navigationController pushViewController:viewController animated:YES];
 }
 

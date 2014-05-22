@@ -1,8 +1,11 @@
 #import "BeerDetailViewController.h"
 #import "NetworkRequestHandler.h"
 #import "BeerSizePicker.h"
+#import "BrewerySearchTableViewController.h"
 
-@interface BeerDetailViewController () <BeerSizePickerDelegate, UITextFieldDelegate>
+@interface BeerDetailViewController () <BeerSizePickerDelegate,
+                                        UITextFieldDelegate,
+                                        BrewerySearchTableViewControllerDelegate>
 
 @property (nonatomic) Beer *beer;
 @property (nonatomic) UIScrollView *scrollView;
@@ -18,6 +21,7 @@
 @property (nonatomic) UIButton *cancelButton;
 @property (nonatomic) UIButton *editButton;
 @property (nonatomic) UIGestureRecognizer *sizeLabelTouchRecognizer;
+@property (nonatomic) BrewerySearchTableViewController *brewerySearchTableViewController;
 
 // TODO: nicer layout
 // TODO: show table of other vintages of the same beer in your cellar
@@ -33,7 +37,9 @@
         self.editMode = editing;
         
         self.beerField = [[UITextField alloc] init];
+//        self.beerField.delegate = self;
         self.breweryField = [[UITextField alloc] init];
+        self.breweryField.delegate = self;
         self.dateField = [[UITextField alloc] init];
         self.quantityLabel = [[UILabel alloc] init];
         self.quantityLabel.text = @"Quantity: ";
@@ -44,6 +50,9 @@
         
         self.sizeLabelTouchRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                 action:@selector(showSizePicker)];
+        self.brewerySearchTableViewController =
+            [[BrewerySearchTableViewController alloc] initWithStyle:UITableViewStylePlain];
+        self.brewerySearchTableViewController.delegate = self;
     }
     return self;
 }
@@ -92,6 +101,7 @@
     [self.scrollView addSubview:self.saveButton];
     [self.scrollView addSubview:self.cancelButton];
     [self.scrollView addSubview:self.editButton];
+    [self.scrollView addSubview:self.brewerySearchTableViewController.tableView];
     
     [self.editButton makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.scrollView.top).offset(10);
@@ -154,6 +164,12 @@
         make.centerX.equalTo(self.view.centerX);
     }];
     
+    [self.brewerySearchTableViewController.tableView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.breweryField.bottom);
+        make.width.equalTo(self.breweryField.width);
+        make.height.equalTo(@200);
+    }];
+    
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = self.beer.name;
     
@@ -164,6 +180,7 @@
     self.sizeLabel.text = [NSString stringWithFormat:@"%@", self.beer.size ?: @"< Select a Size >"];
     self.sizeLabel.userInteractionEnabled = YES;
     self.sizePicker.delegate = self;
+    self.brewerySearchTableViewController.tableView.hidden = YES;
     
     [self enableEditing:self.editMode];
 }
@@ -184,7 +201,6 @@
         self.breweryField.borderStyle = UITextBorderStyleBezel;
         self.quantityField.borderStyle = UITextBorderStyleBezel;
         self.dateField.borderStyle = UITextBorderStyleBezel;
-        
         
         self.beerField.placeholder = @"Beer";
         self.breweryField.placeholder = @"Brewery";
@@ -226,12 +242,21 @@
     if (self.beer.quantity == 1) {
         [self deleteBeer];
     } else {
-        [self updateBeerQuantity:self.beer.quantity newQuantity:(self.beer.quantity - 1)];
+        self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity - 1];
+        [self updateBeer];
     }
 }
 
 - (void)saveButtonPressed {
-    Beer *newBeer = self.beer;
+    if (self.beer) {
+        [self updateBeer];
+    } else {
+        [self createNewBeer];
+    }
+}
+
+- (void)createNewBeer {
+    Beer *newBeer = [[Beer alloc] init];
     newBeer.name = self.beerField.text;
     newBeer.brewery = self.breweryField.text;
     newBeer.size = self.sizeLabel.text;
@@ -246,7 +271,6 @@
                                  @"brewery":self.beer.brewery,
                                  @"_action":@"create",
                                  @"quantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
-//                                 @"originalQuantity":[NSString stringWithFormat:@"%d", oldQuantity],
                                  @"size":self.beer.size,
                                  @"bottleDate":self.beer.bottleDate,
                                  @"notes":self.beer.notes ?: @""};
@@ -257,7 +281,6 @@
                                        [self enableEditing:NO];
                                    }
                                }];
-
 }
 
 - (void)showSizePicker {
@@ -280,26 +303,32 @@
                                }];
 }
 
-- (void)updateBeerQuantity:(NSInteger)oldQuantity newQuantity:(NSInteger)newQuantity {
+- (void)updateBeer {
     NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
     NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
     NSDictionary *parameters = @{@"id":self.beer.uniqueId,
                                  @"beerId":self.beer.beerId,
-                                 @"beer":self.beer.name,
+                                 @"beer":self.beerField.text,
                                  @"breweryId":self.beer.breweryId,
-                                 @"brewery":self.beer.brewery,
+                                 @"brewery":self.breweryField.text,
                                  @"_action":@"update",
-                                 @"quantity":[NSString stringWithFormat:@"%d", newQuantity],
-                                 @"originalQuantity":[NSString stringWithFormat:@"%d", oldQuantity],
-                                 @"size":self.beer.size,
-                                 @"bottleDate":self.beer.bottleDate,
+                                 @"quantity":self.quantityField.text,
+                                 @"originalQuantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
+                                 @"size":self.sizeLabel.text,
+                                 @"bottleDate":self.dateField.text,
                                  @"notes":self.beer.notes};
     [network handleHttpPostRequestWithUrl:url
                                parameters:parameters
                                onComplete:^(NSInteger statusCode, NSError *error) {
-                                   // TODO: this isn't great. should refresh state from database
-                                   self.beer.quantity = newQuantity;
-                                   self.quantityField.text = [NSString stringWithFormat:@"%d", newQuantity];
+                                   if (!error) {
+                                       // TODO: this isn't great. should refresh beer info from server
+                                       self.beer.name = self.beerField.text;
+                                       self.beer.brewery = self.breweryField.text;
+                                       self.beer.size = self.sizeLabel.text;
+                                       self.beer.quantity = [self.quantityField.text intValue];
+                                       
+                                       [self enableEditing:NO];
+                                   }
                                }];
 }
 
@@ -313,10 +342,29 @@
 
 #pragma mark - UITextFieldDelegate
 
-// TODO: use this later if we need to scroll to fit editable views above keyboard
--(void)textFieldDidBeginEditing:(UITextField *)textField {
-    CGRect frame = textField.frame;
-    [self.scrollView setContentOffset:CGPointMake(0, frame.origin.y - 70) animated:YES];
+-(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
+    if (textField.text.length >= 3) {
+        self.brewerySearchTableViewController.tableView.hidden = NO;
+        NSString *searchText = [textField.text stringByReplacingCharactersInRange:range withString:string];
+        [self.brewerySearchTableViewController searchWithString:searchText];
+    } else {
+        self.brewerySearchTableViewController.tableView.hidden = YES;
+    }
+    
+    return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+    self.brewerySearchTableViewController.tableView.hidden = YES;
+}
+
+#pragma mark - BrewerySearchTableViewControllerDelegate
+
+- (void)brewerySelected:(Brewery *)brewery {
+    self.breweryField.text = brewery.name;
+    self.beer.brewery = brewery.name;
+    self.beer.breweryId = brewery.breweryId;
+    self.brewerySearchTableViewController.tableView.hidden = YES;
 }
 
 

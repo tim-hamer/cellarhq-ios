@@ -16,4 +16,7 @@ typedef void (^NetworkRequestHandlerCompletionBlock)(NSInteger statusCode, NSErr
                           parameters:(NSDictionary *)parameters
                           onComplete:(NetworkRequestHandlerCompletionBlock)onComplete;
 
+- (void)handleHttpGetRequestWithUrl:(NSURL *)url
+                         onComplete:(NetworkRequestHandlerCompletionBlock)onComplete;
+
 @end

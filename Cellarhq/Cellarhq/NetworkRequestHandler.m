@@ -35,6 +35,12 @@
     [connection start];
 }
 
+- (void)handleHttpGetRequestWithUrl:(NSURL *)url
+                                 onComplete:(NetworkRequestHandlerCompletionBlock)onComplete {
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+}
+
 #pragma mark - NSURLConnectionDataDelegate
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -48,6 +54,8 @@
     self.completionBlock(0, error);
 }
 
+
+#pragma mark - private
 
 - (NSString *)generateUrlEncodedStringFromParameters:(NSDictionary *)parameters withParameterStringPrefix:(NSString *)paramPrefix {
     if (parameters) {
