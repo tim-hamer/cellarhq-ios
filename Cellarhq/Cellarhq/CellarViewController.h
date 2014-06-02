@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Cellar.h"
 
 @interface CellarViewController : UIViewController
+
+- (instancetype) initWithCellar:(Cellar *)cellar;
 
 @end

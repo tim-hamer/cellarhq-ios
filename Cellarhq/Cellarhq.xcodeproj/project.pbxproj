@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		220744C0192DB26A00B86585 /* BeerSearchTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 220744BF192DB26A00B86585 /* BeerSearchTableViewController.m */; };
+		222E3B2E193BCE06006528AC /* Cellar.m in Sources */ = {isa = PBXBuildFile; fileRef = 222E3B2D193BCE06006528AC /* Cellar.m */; };
 		22AA2B151900D547005140DA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AA2B141900D547005140DA /* Foundation.framework */; };
 		22AA2B171900D547005140DA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AA2B161900D547005140DA /* CoreGraphics.framework */; };
 		22AA2B191900D547005140DA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22AA2B181900D547005140DA /* UIKit.framework */; };
@@ -54,6 +56,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		220744BE192DB26A00B86585 /* BeerSearchTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BeerSearchTableViewController.h; sourceTree = "<group>"; };
+		220744BF192DB26A00B86585 /* BeerSearchTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BeerSearchTableViewController.m; sourceTree = "<group>"; };
+		222E3B2C193BCE06006528AC /* Cellar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Cellar.h; sourceTree = "<group>"; };
+		222E3B2D193BCE06006528AC /* Cellar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Cellar.m; sourceTree = "<group>"; };
 		22AA2B111900D547005140DA /* Cellarhq.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cellarhq.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22AA2B141900D547005140DA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		22AA2B161900D547005140DA /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -273,6 +279,8 @@
 				22C3E8E919173C1D000035D1 /* LoginViewController.m */,
 				22AA2B2C1900D547005140DA /* CellarViewController.h */,
 				22AA2B2D1900D547005140DA /* CellarViewController.m */,
+				220744BE192DB26A00B86585 /* BeerSearchTableViewController.h */,
+				220744BF192DB26A00B86585 /* BeerSearchTableViewController.m */,
 				22C3E8F8192C5BF3000035D1 /* BrewerySearchTableViewController.h */,
 				22C3E8F9192C5BF3000035D1 /* BrewerySearchTableViewController.m */,
 			);
@@ -286,6 +294,8 @@
 				22C3E8E319136A48000035D1 /* Beer.m */,
 				22C3E8FB192CE710000035D1 /* Brewery.h */,
 				22C3E8FC192CE710000035D1 /* Brewery.m */,
+				222E3B2C193BCE06006528AC /* Cellar.h */,
+				222E3B2D193BCE06006528AC /* Cellar.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -411,6 +421,7 @@
 				22AA2B6E19022684005140DA /* MASCompositeConstraint.m in Sources */,
 				22AA2B7419022684005140DA /* NSArray+MASAdditions.m in Sources */,
 				22AA2B2E1900D547005140DA /* CellarViewController.m in Sources */,
+				220744C0192DB26A00B86585 /* BeerSearchTableViewController.m in Sources */,
 				22AA2B251900D547005140DA /* AppDelegate.m in Sources */,
 				22C3E8FA192C5BF3000035D1 /* BrewerySearchTableViewController.m in Sources */,
 				22AA2B7119022684005140DA /* MASLayoutConstraint.m in Sources */,
@@ -420,6 +431,7 @@
 				22AA2B7619022684005140DA /* View+MASAdditions.m in Sources */,
 				22C3E8F61919EB28000035D1 /* BeerSizePicker.m in Sources */,
 				22AA2B7219022684005140DA /* MASViewAttribute.m in Sources */,
+				222E3B2E193BCE06006528AC /* Cellar.m in Sources */,
 				22C3E8E71916C9F1000035D1 /* BeerDetailViewController.m in Sources */,
 				22AA2B6F19022684005140DA /* MASConstraint.m in Sources */,
 				22C3E8EA19173C1D000035D1 /* LoginViewController.m in Sources */,

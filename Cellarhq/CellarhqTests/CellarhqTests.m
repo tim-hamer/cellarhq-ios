@@ -8,6 +8,8 @@
 
 #import <XCTest/XCTest.h>
 #import "AuthenticationProvider.h"
+#import "Beer.h"
+#import "Cellar.h"
 
 @interface CellarhqTests : XCTestCase
 
@@ -32,9 +34,11 @@
     
     NSString *username = @"hamer.tim@gmail.com";
     NSString *password = @"reaper";
-    BOOL status = [testObject loginWithUsername:username password:password];
-    
-    XCTAssertTrue(status);
+    [testObject loginWithUsername:username
+                         password:password
+                       onComplete:^(BOOL success) {
+                       XCTAssertTrue(success);
+                   }];
 }
 
 - (void)testLoginFail {
@@ -42,9 +46,34 @@
     
     NSString *username = @"blah";
     NSString *password = @"blah";
-    BOOL status = [testObject loginWithUsername:username password:password];
+    [testObject loginWithUsername:username
+                         password:password
+                       onComplete:^(BOOL success) {
+                           XCTAssertFalse(success);
+                       }];
+}
+
+- (void)testCellarSearch {
+    Beer *nameMatch = [[Beer alloc] init];
+    nameMatch.name = @"Beer is Good";
+    nameMatch.brewery = @"Bad Brewery";
     
-    XCTAssertFalse(status);
+    Beer *breweryMatch = [[Beer alloc] init];
+    breweryMatch.name = @"stupid name";
+    breweryMatch.brewery = @"we brewgoodbeer";
+    
+    Beer *noMatch = [[Beer alloc] init];
+    noMatch.name = @"not a Match";
+    noMatch.brewery = @"also no match here";
+    
+    Cellar *cellar = [[Cellar alloc] init];
+    
+    cellar.beers = @[nameMatch, breweryMatch, noMatch];
+    
+    [cellar beersContainingText:@"goo"];
+    
+    XCTAssertEqual(2, cellar.beers.count);
+    XCTAssertFalse([cellar.beers containsObject:noMatch]);
 }
 
 @end

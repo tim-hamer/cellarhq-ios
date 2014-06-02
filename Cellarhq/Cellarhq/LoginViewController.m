@@ -15,6 +15,7 @@
 @property (nonatomic) UITextField *usernameField;
 @property (nonatomic) UITextField *passwordField;
 @property (nonatomic) UIButton *loginButton;
+@property (nonatomic) UIActivityIndicatorView *spinnerView;
 
 @end
 
@@ -63,6 +64,7 @@
         
         self.navigationItem.title = @"Login";
         self.view.backgroundColor = [UIColor whiteColor];
+        self.spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     }
 
     return self;
@@ -70,6 +72,9 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+    [self.view addSubview:self.spinnerView];
+    [self.spinnerView startAnimating];
 
     for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
         if ([cookie.name isEqualToString:@"_token"]) {
@@ -80,6 +85,10 @@
                 [self loginSuccess];
             } else {
                 NSLog(@"cookie expired");
+                [self.spinnerView stopAnimating];
+                [self.spinnerView removeFromSuperview];
+                UIAlertView *expiredView = [[UIAlertView alloc] initWithTitle:@"Session Expired" message:@"Please re-enter credentials to log in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [expiredView show];
             }
         }
     }
@@ -87,17 +96,25 @@
 
 - (void)loginButtonPressed {
     AuthenticationProvider *authProvider = [[AuthenticationProvider alloc] init];
+    [self.view addSubview:self.spinnerView];
+    [self.spinnerView startAnimating];
     [authProvider loginWithUsername:self.usernameField.text password:self.passwordField.text onComplete:^(BOOL success) {
         if (success) {
             [self loginSuccess];
         } else {
             NSLog(@"Failed to authenticate");
+            UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Failed to authenticate" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [errorView show];
         }
     }];
 }
 
 - (void)loginSuccess {
-    CellarViewController *cellarViewController = [[CellarViewController alloc] init];
+    [self.spinnerView stopAnimating];
+    [self.spinnerView removeFromSuperview];
+    
+    Cellar *cellar = [[Cellar alloc] init];
+    CellarViewController *cellarViewController = [[CellarViewController alloc] initWithCellar:cellar];
     [self.navigationController pushViewController:cellarViewController animated:YES];
 }
 

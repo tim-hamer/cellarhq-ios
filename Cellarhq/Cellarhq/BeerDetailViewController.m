@@ -2,12 +2,15 @@
 #import "NetworkRequestHandler.h"
 #import "BeerSizePicker.h"
 #import "BrewerySearchTableViewController.h"
+#import "BeerSearchTableViewController.h"
 
 @interface BeerDetailViewController () <BeerSizePickerDelegate,
                                         UITextFieldDelegate,
-                                        BrewerySearchTableViewControllerDelegate>
+                                        BrewerySearchTableViewControllerDelegate,
+                                        BeerSearchTableViewControllerDelegate>
 
 @property (nonatomic) Beer *beer;
+@property (nonatomic) Brewery *brewery;
 @property (nonatomic) UIScrollView *scrollView;
 @property (nonatomic) UITextField *beerField;
 @property (nonatomic) UITextField *breweryField;
@@ -22,6 +25,7 @@
 @property (nonatomic) UIButton *editButton;
 @property (nonatomic) UIGestureRecognizer *sizeLabelTouchRecognizer;
 @property (nonatomic) BrewerySearchTableViewController *brewerySearchTableViewController;
+@property (nonatomic) BeerSearchTableViewController *beerSearchTableViewController;
 
 // TODO: nicer layout
 // TODO: show table of other vintages of the same beer in your cellar
@@ -36,10 +40,10 @@
         self.beer = beer;
         self.editMode = editing;
         
-        self.beerField = [[UITextField alloc] init];
-//        self.beerField.delegate = self;
         self.breweryField = [[UITextField alloc] init];
         self.breweryField.delegate = self;
+        self.beerField = [[UITextField alloc] init];
+        self.beerField.delegate = self;
         self.dateField = [[UITextField alloc] init];
         self.quantityLabel = [[UILabel alloc] init];
         self.quantityLabel.text = @"Quantity: ";
@@ -48,11 +52,22 @@
         self.sizePicker = [[BeerSizePicker alloc] init];
         self.sizePicker.hidden = YES;
         
+        self.breweryField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.breweryField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.breweryField.spellCheckingType = UITextSpellCheckingTypeNo;
+
+        self.beerField.autocapitalizationType = UITextAutocapitalizationTypeNone;
+        self.beerField.autocorrectionType = UITextAutocorrectionTypeNo;
+        self.beerField.spellCheckingType = UITextSpellCheckingTypeNo;
+
+        
         self.sizeLabelTouchRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
                                                                                 action:@selector(showSizePicker)];
         self.brewerySearchTableViewController =
             [[BrewerySearchTableViewController alloc] initWithStyle:UITableViewStylePlain];
         self.brewerySearchTableViewController.delegate = self;
+        self.beerSearchTableViewController = [[BeerSearchTableViewController alloc] initWithStyle:UITableViewStylePlain];
+        self.beerSearchTableViewController.delegate = self;
     }
     return self;
 }
@@ -102,6 +117,7 @@
     [self.scrollView addSubview:self.cancelButton];
     [self.scrollView addSubview:self.editButton];
     [self.scrollView addSubview:self.brewerySearchTableViewController.tableView];
+    [self.scrollView addSubview:self.beerSearchTableViewController.tableView];
     
     [self.editButton makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(self.scrollView.top).offset(10);
@@ -129,13 +145,13 @@
     }];
     
     [self.sizeLabel makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.dateField.bottom).offset(20);
-        make.left.equalTo(self.dateField.left);
+        make.top.equalTo(self.dateField.top);
+        make.left.equalTo(self.dateField.right).offset(30);
     }];
     
     [self.quantityLabel makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.sizeLabel.bottom).offset(20);
-        make.left.equalTo(self.sizeLabel.left);
+        make.top.equalTo(self.dateField.bottom).offset(20);
+        make.left.equalTo(self.dateField.left);
     }];
     
     [self.quantityField makeConstraints:^(MASConstraintMaker *make) {
@@ -170,6 +186,12 @@
         make.height.equalTo(@200);
     }];
     
+    [self.beerSearchTableViewController.tableView makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.beerField.bottom);
+        make.width.equalTo(self.beerField.width);
+        make.height.equalTo(@200);
+    }];
+    
     self.view.backgroundColor = [UIColor whiteColor];
     self.navigationItem.title = self.beer.name;
     
@@ -181,6 +203,7 @@
     self.sizeLabel.userInteractionEnabled = YES;
     self.sizePicker.delegate = self;
     self.brewerySearchTableViewController.tableView.hidden = YES;
+    self.beerSearchTableViewController.tableView.hidden = YES;
     
     [self enableEditing:self.editMode];
 }
@@ -231,11 +254,15 @@
 }
 
 - (void)cancelButtonPressed {
-    [self enableEditing:NO];
-    self.breweryField.text = self.beer.brewery;
-    self.beerField.text = self.beer.name;
-    self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity];
-    self.dateField.text = self.beer.bottleDate;
+    if (self.beer.uniqueId) {
+        [self enableEditing:NO];
+        self.breweryField.text = self.beer.brewery;
+        self.beerField.text = self.beer.name;
+        self.quantityField.text = [NSString stringWithFormat:@"%d", self.beer.quantity];
+        self.dateField.text = self.beer.bottleDate;
+    } else {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
 }
 
 - (void)removeOneButtonPressed {
@@ -248,7 +275,7 @@
 }
 
 - (void)saveButtonPressed {
-    if (self.beer) {
+    if (self.beer.uniqueId) {
         [self updateBeer];
     } else {
         [self createNewBeer];
@@ -256,31 +283,34 @@
 }
 
 - (void)createNewBeer {
-    Beer *newBeer = [[Beer alloc] init];
-    newBeer.name = self.beerField.text;
-    newBeer.brewery = self.breweryField.text;
-    newBeer.size = self.sizeLabel.text;
-    newBeer.quantity = [self.quantityField.text intValue];
-    newBeer.bottleDate = self.dateField.text;
-    self.beer = newBeer;
-    NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
-    NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
-    NSDictionary *parameters = @{@"beerId":self.beer.beerId,
-                                 @"beer":self.beer.name,
-                                 @"breweryId":self.beer.breweryId,
-                                 @"brewery":self.beer.brewery,
-                                 @"_action":@"create",
-                                 @"quantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
-                                 @"size":self.beer.size,
-                                 @"bottleDate":self.beer.bottleDate,
-                                 @"notes":self.beer.notes ?: @""};
-    [network handleHttpPostRequestWithUrl:url
-                               parameters:parameters
-                               onComplete:^(NSInteger statusCode, NSError *error) {
-                                   if (!error) {
-                                       [self enableEditing:NO];
-                                   }
-                               }];
+    self.beer.size = self.sizeLabel.text;
+    self.beer.quantity = [self.quantityField.text intValue];
+    self.beer.bottleDate = self.dateField.text;
+    if ([self.beer validate]) {
+        NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
+        NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
+        NSDictionary *parameters = @{@"beerId":self.beer.beerId,
+                                     @"beer":self.beer.name,
+                                     @"breweryId":self.beer.breweryId,
+                                     @"brewery":self.beer.brewery,
+                                     @"_action":@"create",
+                                     @"quantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
+                                     @"size":self.beer.size,
+                                     @"style":self.beer.style,
+                                     @"styleId":self.beer.styleId,
+                                     @"bottleDate":self.beer.bottleDate,
+                                     @"notes":self.beer.notes ?: @""};
+        [network handleHttpPostRequestWithUrl:url
+                                   parameters:parameters
+                                   onComplete:^(NSInteger statusCode, NSError *error) {
+                                       if (!error) {
+                                           [self enableEditing:NO];
+                                       }
+                                   }];
+    } else {
+        UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Beer could not be added due to invalid data" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [errorView show];
+    }
 }
 
 - (void)showSizePicker {
@@ -306,30 +336,35 @@
 - (void)updateBeer {
     NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
     NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
-    NSDictionary *parameters = @{@"id":self.beer.uniqueId,
-                                 @"beerId":self.beer.beerId,
-                                 @"beer":self.beerField.text,
-                                 @"breweryId":self.beer.breweryId,
-                                 @"brewery":self.breweryField.text,
-                                 @"_action":@"update",
-                                 @"quantity":self.quantityField.text,
-                                 @"originalQuantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
-                                 @"size":self.sizeLabel.text,
-                                 @"bottleDate":self.dateField.text,
-                                 @"notes":self.beer.notes};
-    [network handleHttpPostRequestWithUrl:url
-                               parameters:parameters
-                               onComplete:^(NSInteger statusCode, NSError *error) {
-                                   if (!error) {
-                                       // TODO: this isn't great. should refresh beer info from server
-                                       self.beer.name = self.beerField.text;
-                                       self.beer.brewery = self.breweryField.text;
-                                       self.beer.size = self.sizeLabel.text;
-                                       self.beer.quantity = [self.quantityField.text intValue];
-                                       
-                                       [self enableEditing:NO];
-                                   }
-                               }];
+    if ([self.beer validate]) {
+        NSDictionary *parameters = @{@"id":self.beer.uniqueId,
+                                     @"beerId":self.beer.beerId,
+                                     @"beer":self.beerField.text,
+                                     @"breweryId":self.beer.breweryId,
+                                     @"brewery":self.breweryField.text,
+                                     @"_action":@"update",
+                                     @"quantity":self.quantityField.text,
+                                     @"originalQuantity":[NSString stringWithFormat:@"%d", self.beer.quantity],
+                                     @"size":self.sizeLabel.text,
+                                     @"bottleDate":self.dateField.text,
+                                     @"notes":self.beer.notes};
+        [network handleHttpPostRequestWithUrl:url
+                                   parameters:parameters
+                                   onComplete:^(NSInteger statusCode, NSError *error) {
+                                       if (!error) {
+                                           // TODO: this isn't great. should refresh beer info from server
+                                           self.beer.name = self.beerField.text;
+                                           self.beer.brewery = self.breweryField.text;
+                                           self.beer.size = self.sizeLabel.text;
+                                           self.beer.quantity = [self.quantityField.text intValue];
+                                           
+                                           [self enableEditing:NO];
+                                       }
+                                   }];
+    } else {
+        UIAlertView *errorView = [[UIAlertView alloc] initWithTitle:@"ERROR" message:@"Beer could not be updated due to invalid data" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [errorView show];
+    }
 }
 
 #pragma mark - BeerSizePickerDelegate
@@ -343,28 +378,49 @@
 #pragma mark - UITextFieldDelegate
 
 -(BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (textField.text.length >= 3) {
-        self.brewerySearchTableViewController.tableView.hidden = NO;
-        NSString *searchText = [textField.text stringByReplacingCharactersInRange:range withString:string];
-        [self.brewerySearchTableViewController searchWithString:searchText];
-    } else {
-        self.brewerySearchTableViewController.tableView.hidden = YES;
-    }
+    NSString *searchText = [textField.text stringByReplacingCharactersInRange:range withString:string];
     
+    if (textField == self.breweryField) {
+        if (searchText.length >= 3) {
+            self.brewerySearchTableViewController.tableView.hidden = NO;
+            [self.brewerySearchTableViewController searchWithString:searchText];
+        } else {
+            self.brewerySearchTableViewController.tableView.hidden = YES;
+        }
+    } else if (textField == self.beerField) {
+        if (searchText.length > 0) {
+            self.beerSearchTableViewController.tableView.hidden = NO;
+            [self.beerSearchTableViewController searchWithBreweryId:self.brewery.breweryId searchString:searchText];
+        } else {
+            self.beerSearchTableViewController.tableView.hidden = YES;
+        }
+    }
+        
     return YES;
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField {
-    self.brewerySearchTableViewController.tableView.hidden = YES;
+    if (textField == self.breweryField) {
+        self.brewerySearchTableViewController.tableView.hidden = YES;
+    } else if (textField == self.beerField) {
+        self.beerSearchTableViewController.tableView.hidden = YES;
+    }
 }
 
 #pragma mark - BrewerySearchTableViewControllerDelegate
 
 - (void)brewerySelected:(Brewery *)brewery {
     self.breweryField.text = brewery.name;
-    self.beer.brewery = brewery.name;
-    self.beer.breweryId = brewery.breweryId;
+    self.brewery = brewery;
     self.brewerySearchTableViewController.tableView.hidden = YES;
+}
+
+#pragma mark - BeerSearchTableViewControllerDelegate
+
+- (void)beerSelected:(Beer *)beer {
+    self.beerField.text = beer.name;
+    self.beer = beer;
+    self.beerSearchTableViewController.tableView.hidden = YES;
 }
 
 

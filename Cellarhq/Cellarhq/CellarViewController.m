@@ -1,32 +1,41 @@
 #import "CellarViewController.h"
-#import "TFHpple.h"
 #import "Beer.h"
 #import "BeerDetailViewController.h"
 #import "NetworkRequestHandler.h"
 
 
-@interface CellarViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface CellarViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
 
-//@property (nonatomic) UILabel *label;
+@property (nonatomic) Cellar *cellar;
+@property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) UITableView *table;
-@property (nonatomic) NSArray *beers;
 
 @end
 
 @implementation CellarViewController
 
-- (instancetype) init {
+- (instancetype) initWithCellar:(Cellar *)cellar {
     if (self = [super init]) {
+        self.cellar = cellar;
+        self.searchBar = [[UISearchBar alloc] init];
+        self.searchBar.delegate = self;
+        [self.view addSubview:self.searchBar];
         
         self.table = [[UITableView alloc] init];
         self.table.delegate = self;
         self.table.dataSource = self;
         [self.view addSubview:self.table];
         
+        [self.searchBar makeConstraints:^(MASConstraintMaker *make) {
+            make.top.equalTo(self.view.top).offset(65);
+            make.left.equalTo(self.view.left);
+            make.width.equalTo(self.view.width);
+        }];
+        
         [self.table makeConstraints:^(MASConstraintMaker *make) {
             make.centerX.equalTo(self.view.centerX);
             make.width.equalTo(self.view.width).offset(-50);
-            make.top.equalTo(self.view.top);
+            make.top.equalTo(self.searchBar.bottom);
             make.bottom.equalTo(self.view.bottom);
         }];
         
@@ -39,7 +48,6 @@
 
 - (void)loadView {
     [super loadView];
-    self.beers = [self beersInYourCellar];
 }
 
 - (void)viewDidLoad {
@@ -48,21 +56,6 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-    self.beers = [self beersInYourCellar];
-    [self.table reloadData];
-}
-
-- (NSArray *)beersInYourCellar {
-    NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar"];
-    NSData *urlData = [NSData dataWithContentsOfURL:url];
-    return [self parseBeersFromWebData:urlData];
-}
-
-- (NSArray *)beersInCellarWithName:(NSString *)cellarName {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://www.cellarhq.com/cellar/%@", cellarName]];
-    NSData *urlData = [NSData dataWithContentsOfURL:url];
-    return [self parseBeersFromWebData:urlData];
 }
 
 - (void)addBeer {
@@ -70,75 +63,50 @@
     [self.navigationController pushViewController:viewController animated:YES];
 }
 
-- (NSArray *)parseBeersFromWebData:(NSData *)data {
-    TFHpple *parser = [TFHpple hppleWithHTMLData:data];
-    
-    NSString *tableRowQuery = @"//tbody/tr";
-    NSArray *tableRows = [parser searchWithXPathQuery:tableRowQuery];
-    
-    NSMutableArray *beers = [NSMutableArray array];
-    
-    for (TFHppleElement *tableRow in tableRows) {
-        NSDictionary *attributes = tableRow.attributes;
-        NSString *uniqueId = [attributes[@"id"] substringFromIndex:5];
-        NSString *beerId = attributes[@"data-beerid"];
-        NSString *breweryId = attributes[@"data-breweryid"];
-        
-        TFHppleElement *breweryElement = [[tableRow searchWithXPathQuery:@"//td[@class='brewery']/a"] objectAtIndex:0];
-        NSString *breweryName = [breweryElement text];
-        
-        TFHppleElement *beerElement = [[tableRow searchWithXPathQuery:@"//td[@class='beer']/a"] objectAtIndex:0];
-        NSString *beerName = [beerElement text];
-        
-        TFHppleElement *sizeElement = [[tableRow searchWithXPathQuery:@"//td[@class='size']"] objectAtIndex:0];
-        NSString *size = [sizeElement text];
-        
-        TFHppleElement *quantityElement = [[tableRow searchWithXPathQuery:@"//td[@class='quantity']"] objectAtIndex:0];
-        int quantity = [[quantityElement text] integerValue];
-        
-        NSArray *dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date']"];
-        if (dateCellSearchResults.count == 0) {
-            dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date notes-icon']"];
-        }
-        TFHppleElement *dateElement = [dateCellSearchResults objectAtIndex:0];
-        NSString *date = [[dateElement text]
-                          stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        Beer *beer = [[Beer alloc] init];
-        beer.name = beerName;
-        beer.brewery = breweryName;
-        beer.size = size;
-        beer.quantity = quantity;
-        beer.bottleDate = date;
-        beer.uniqueId = uniqueId;
-        beer.beerId = beerId;
-        beer.breweryId = breweryId;
-        
-        [beers addObject:beer];
-    }
-    return beers;
-}
 
 #pragma mark - UITableViewDelegate & UITableViewDataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cellarhq"];
-    Beer *beer = (Beer *)[self.beers objectAtIndex:indexPath.row];
-
+    Beer *beer = (Beer *)[self.cellar.beers objectAtIndex:indexPath.row];
+    
     NSString *year = [beer.bottleDate substringToIndex:4];
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ %@", year, beer.name];
-    cell.detailTextLabel.text = beer.brewery;
+    cell.textLabel.text = beer.name;
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ - %@", beer.brewery, year];
     
     return cell;
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.beers.count;
+    return self.cellar.beers.count;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    BeerDetailViewController *beerDetails = [[BeerDetailViewController alloc] initWithBeer:[self.beers objectAtIndex:indexPath.row] editing:NO];
+    BeerDetailViewController *beerDetails = [[BeerDetailViewController alloc] initWithBeer:[self.cellar.beers objectAtIndex:indexPath.row] editing:NO];
     [self.navigationController pushViewController:beerDetails animated:YES];
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+#pragma mark - UISearchBarDelegate
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    searchBar.showsCancelButton = YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    searchBar.showsCancelButton = NO;
+    searchBar.text = nil;
+    [self.cellar performSearch:nil];
+    [self.table reloadData];
+}
+
+- (BOOL)searchBar:(UISearchBar *)searchBar shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    NSString *searchText = [searchBar.text stringByReplacingCharactersInRange:range withString:text];
+    [self.cellar performSearch:searchText];
+    [self.table reloadData];
+    
+    return YES;
 }
 
 @end
