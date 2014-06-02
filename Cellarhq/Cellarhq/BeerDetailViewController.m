@@ -145,7 +145,7 @@
     }];
     
     [self.sizeLabel makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.dateField.top);
+        make.centerY.equalTo(self.dateField.centerY);
         make.left.equalTo(self.dateField.right).offset(30);
     }];
     
