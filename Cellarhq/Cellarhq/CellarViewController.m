@@ -9,6 +9,7 @@
 @property (nonatomic) Cellar *cellar;
 @property (nonatomic) UISearchBar *searchBar;
 @property (nonatomic) UITableView *table;
+@property (nonatomic) MASConstraint *tableBottom;
 
 @end
 
@@ -38,6 +39,12 @@
             make.top.equalTo(self.searchBar.bottom);
             make.bottom.equalTo(self.view.bottom);
         }];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
+                                                     name:UIKeyboardDidShowNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillHide:)
+                                                     name:UIKeyboardWillHideNotification object:nil];
         
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationItem.title = @"My Cellar";
@@ -107,6 +114,20 @@
     [self.table reloadData];
     
     return YES;
+}
+
+- (void)keyboardWillShow:(NSNotification *)notification {
+    [self.table makeConstraints:^(MASConstraintMaker *make) {
+         self.tableBottom =  make.bottom.equalTo(self.view.bottom).offset(-216);
+    }];
+}
+
+- (void)keyboardWillHide:(NSNotification *)notification {
+    [self.tableBottom uninstall];
+    [self.table makeConstraints:^(MASConstraintMaker *make) {
+        make.bottom.equalTo(self.view.bottom);
+    }];
+    
 }
 
 @end
