@@ -10,12 +10,13 @@
 #import "AuthenticationProvider.h"
 #import "CellarViewController.h"
 
-@interface LoginViewController ()
+@interface LoginViewController () <AuthenticationProviderDelegate>
 
 @property (nonatomic) UITextField *usernameField;
 @property (nonatomic) UITextField *passwordField;
 @property (nonatomic) UIButton *loginButton;
 @property (nonatomic) UIActivityIndicatorView *spinnerView;
+@property (nonatomic) AuthenticationProvider *authProvider;
 
 @end
 
@@ -40,6 +41,7 @@
         
         self.loginButton = [UIButton buttonWithType:UIButtonTypeSystem];
         [self.loginButton setTitle:@"Login" forState:UIControlStateNormal];
+        self.loginButton.titleLabel.font = [UIFont fontWithName:self.loginButton.titleLabel.font.familyName size:20];
         [self.loginButton addTarget:self action:@selector(loginButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.loginButton];
         
@@ -47,24 +49,27 @@
             make.top.equalTo(self.view.top).offset(80);
             make.centerX.equalTo(self.view.centerX);
             make.width.equalTo(self.view.width).offset(-50);
+            make.height.equalTo(@40);
         }];
         
         [self.passwordField makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.usernameField.bottom).offset(40);
             make.centerX.equalTo(self.view.centerX);
             make.width.equalTo(self.view.width).offset(-50);
+            make.height.equalTo(@40);
         }];
         
         [self.loginButton makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.passwordField.bottom).offset(30);
             make.left.equalTo(self.passwordField.left);
-            make.width.equalTo(@75);
-            make.height.equalTo(@40);
         }];
         
         self.navigationItem.title = @"Login";
         self.view.backgroundColor = [UIColor whiteColor];
         self.spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        
+        self.authProvider = [[AuthenticationProvider alloc] init];
+        self.authProvider.delegate = self;
     }
 
     return self;
@@ -75,30 +80,14 @@
     
     [self.view addSubview:self.spinnerView];
     [self.spinnerView startAnimating];
-
-    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
-        if ([cookie.name isEqualToString:@"_token"]) {
-            NSLog(@"expiration date: %@", cookie.expiresDate);
-            NSLog(@"current date: %@", [NSDate dateWithTimeIntervalSinceNow:0]);
-            if ([cookie.expiresDate compare:[NSDate dateWithTimeIntervalSinceNow:0]] == NSOrderedDescending) {
-                NSLog(@"login success");
-                [self loginSuccess];
-            } else {
-                NSLog(@"cookie expired");
-                [self.spinnerView stopAnimating];
-                [self.spinnerView removeFromSuperview];
-                UIAlertView *expiredView = [[UIAlertView alloc] initWithTitle:@"Session Expired" message:@"Please re-enter credentials to log in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [expiredView show];
-            }
-        }
-    }
+    
+    [self.authProvider attemptAuthentication];
 }
 
 - (void)loginButtonPressed {
-    AuthenticationProvider *authProvider = [[AuthenticationProvider alloc] init];
     [self.view addSubview:self.spinnerView];
     [self.spinnerView startAnimating];
-    [authProvider loginWithUsername:self.usernameField.text password:self.passwordField.text onComplete:^(BOOL success) {
+    [self.authProvider loginWithUsername:self.usernameField.text password:self.passwordField.text onComplete:^(BOOL success) {
         if (success) {
             [self loginSuccess];
         } else {
@@ -116,6 +105,20 @@
     Cellar *cellar = [[Cellar alloc] init];
     CellarViewController *cellarViewController = [[CellarViewController alloc] initWithCellar:cellar];
     [self.navigationController pushViewController:cellarViewController animated:YES];
+}
+
+#pragma mark - AuthenticationProviderDelegate
+
+- (void)authenticationFinished:(BOOL)success {
+    [self.spinnerView stopAnimating];
+    [self.spinnerView removeFromSuperview];
+    
+    if (success) {
+        [self loginSuccess];
+    } else {
+        UIAlertView *expiredView = [[UIAlertView alloc] initWithTitle:@"Session Expired" message:@"Please re-enter credentials to log in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [expiredView show];
+    }
 }
 
 @end

@@ -10,10 +10,20 @@
 
 typedef void (^AuthenticationProviderCompletionBlock)(BOOL);
 
+@protocol AuthenticationProviderDelegate
+
+- (void)authenticationFinished:(BOOL)success;
+
+@end
+
 @interface AuthenticationProvider : NSObject
+
+@property (nonatomic, weak) id<AuthenticationProviderDelegate> delegate;
 
 - (void)loginWithUsername:(NSString *)username
                  password:(NSString *)password
                onComplete:(AuthenticationProviderCompletionBlock)onComplete;
+- (void)attemptAuthentication;
+- (void)logout;
 
 @end

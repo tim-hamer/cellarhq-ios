@@ -38,4 +38,29 @@
     }];
 }
 
+- (void)attemptAuthentication {
+    for (NSHTTPCookie *cookie in [[NSHTTPCookieStorage sharedHTTPCookieStorage] cookies]) {
+        if ([cookie.name isEqualToString:@"_token"]) {
+            NSLog(@"expiration date: %@", cookie.expiresDate);
+            NSLog(@"current date: %@", [NSDate dateWithTimeIntervalSinceNow:0]);
+            if ([cookie.expiresDate compare:[NSDate dateWithTimeIntervalSinceNow:0]] == NSOrderedDescending) {
+                NSLog(@"login success");
+                [self.delegate authenticationFinished:YES];
+            } else {
+                NSLog(@"cookie expired");
+                [self.delegate authenticationFinished:NO];
+            }
+        }
+    }
+}
+
+- (void)logout {
+    NSHTTPCookieStorage *cookieStorage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [cookieStorage cookies]) {
+        if ([cookie.name isEqualToString:@"_token"]) {
+            [cookieStorage deleteCookie:cookie];
+        }
+    }
+}
+
 @end

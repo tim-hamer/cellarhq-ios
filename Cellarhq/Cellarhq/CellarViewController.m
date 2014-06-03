@@ -2,6 +2,7 @@
 #import "Beer.h"
 #import "BeerDetailViewController.h"
 #import "NetworkRequestHandler.h"
+#import "AuthenticationProvider.h"
 
 
 @interface CellarViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate>
@@ -27,19 +28,6 @@
         self.table.dataSource = self;
         [self.view addSubview:self.table];
         
-        [self.searchBar makeConstraints:^(MASConstraintMaker *make) {
-            make.top.equalTo(self.view.top).offset(65);
-            make.left.equalTo(self.view.left);
-            make.width.equalTo(self.view.width);
-        }];
-        
-        [self.table makeConstraints:^(MASConstraintMaker *make) {
-            make.centerX.equalTo(self.view.centerX);
-            make.width.equalTo(self.view.width).offset(-50);
-            make.top.equalTo(self.searchBar.bottom);
-            make.bottom.equalTo(self.view.bottom);
-        }];
-        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillShow:)
                                                      name:UIKeyboardDidShowNotification object:nil];
         
@@ -49,25 +37,41 @@
         self.view.backgroundColor = [UIColor whiteColor];
         self.navigationItem.title = @"My Cellar";
         self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addBeer)];
+        self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Logout" style:UIBarButtonItemStylePlain target:self action:@selector(logout)];
     }
     return self;
 }
 
-- (void)loadView {
-    [super loadView];
-}
-
-- (void)viewDidLoad {
-    [super viewDidLoad];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    [self.searchBar makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view.top).offset(65);
+        make.left.equalTo(self.view.left);
+        make.width.equalTo(self.view.width);
+    }];
+    
+    if (self.tableBottom) {
+        [self.tableBottom uninstall];
+    }
+    
+    [self.table makeConstraints:^(MASConstraintMaker *make) {
+        make.centerX.equalTo(self.view.centerX);
+        make.width.equalTo(self.view.width).offset(-10);
+        make.top.equalTo(self.searchBar.bottom);
+        make.bottom.equalTo(self.view.bottom);
+    }];
 }
 
 - (void)addBeer {
     BeerDetailViewController *viewController = [[BeerDetailViewController alloc] initWithBeer:nil editing:YES];
     [self.navigationController pushViewController:viewController animated:YES];
+}
+
+- (void)logout {
+    AuthenticationProvider *authProvider = [[AuthenticationProvider alloc] init];
+    [authProvider logout];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 
@@ -125,7 +129,7 @@
 - (void)keyboardWillHide:(NSNotification *)notification {
     [self.tableBottom uninstall];
     [self.table makeConstraints:^(MASConstraintMaker *make) {
-        make.bottom.equalTo(self.view.bottom);
+        self.tableBottom = make.bottom.equalTo(self.view.bottom);
     }];
     
 }

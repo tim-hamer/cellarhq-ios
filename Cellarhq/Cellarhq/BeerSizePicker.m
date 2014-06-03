@@ -74,6 +74,9 @@
 }
 
 - (void)doneButtonPressed {
+    if (!self.selectedSize) {
+        self.selectedSize = [self.sizes objectAtIndex:0];
+    }
     [self.delegate sizeSelected:self.selectedSize];
 }
 
