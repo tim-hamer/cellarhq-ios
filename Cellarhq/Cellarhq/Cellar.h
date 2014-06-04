@@ -12,6 +12,7 @@
 
 @property (nonatomic) NSArray *beers;
 
+- (NSArray *)beersInYourCellar;
 - (void)performSearch:(NSString *)searchText;
 
 @end

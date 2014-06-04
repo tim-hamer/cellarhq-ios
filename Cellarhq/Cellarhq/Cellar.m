@@ -80,6 +80,10 @@
         if (dateCellSearchResults.count == 0) {
             dateCellSearchResults = [tableRow searchWithXPathQuery:@"//td[@class='date notes-icon']"];
         }
+        
+        TFHppleElement *styleElement = [[tableRow searchWithXPathQuery:@"//td[@class='style']"] objectAtIndex:0];
+        NSString *style = [styleElement text];
+        
         TFHppleElement *dateElement = [dateCellSearchResults objectAtIndex:0];
         NSString *date = [[dateElement text]
                           stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
@@ -92,6 +96,7 @@
         beer.uniqueId = uniqueId;
         beer.beerId = beerId;
         beer.breweryId = breweryId;
+        beer.style = style;
         
         [beers addObject:beer];
     }

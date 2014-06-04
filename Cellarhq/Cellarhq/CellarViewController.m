@@ -61,6 +61,8 @@
         make.top.equalTo(self.searchBar.bottom);
         make.bottom.equalTo(self.view.bottom);
     }];
+    
+    [self.cellar beersInYourCellar];
 }
 
 - (void)addBeer {
