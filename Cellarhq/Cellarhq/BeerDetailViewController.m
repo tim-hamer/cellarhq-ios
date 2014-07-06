@@ -287,6 +287,9 @@
     self.beer.quantity = [self.quantityField.text intValue];
     self.beer.bottleDate = self.dateField.text;
     if ([self.beer validate]) {
+        if (!self.beer.styleId || [self.beer.styleId isEqual:[NSNull null]]) {
+            self.beer.styleId = @"";
+        }
         NetworkRequestHandler *network = [[NetworkRequestHandler alloc] init];
         NSURL *url = [NSURL URLWithString:@"http://www.cellarhq.com/yourcellar/createOrUpdate"];
         NSDictionary *parameters = @{@"beerId":self.beer.beerId,

@@ -59,7 +59,7 @@
         make.centerX.equalTo(self.view.centerX);
         make.width.equalTo(self.view.width).offset(-10);
         make.top.equalTo(self.searchBar.bottom);
-        make.bottom.equalTo(self.view.bottom);
+        self.tableBottom = make.bottom.equalTo(self.view.bottom);
     }];
     
     [self.cellar beersInYourCellar];
@@ -123,6 +123,7 @@
 }
 
 - (void)keyboardWillShow:(NSNotification *)notification {
+    [self.tableBottom uninstall];
     [self.table makeConstraints:^(MASConstraintMaker *make) {
          self.tableBottom =  make.bottom.equalTo(self.view.bottom).offset(-216);
     }];
