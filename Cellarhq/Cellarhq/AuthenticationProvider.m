@@ -45,13 +45,14 @@
             NSLog(@"current date: %@", [NSDate dateWithTimeIntervalSinceNow:0]);
             if ([cookie.expiresDate compare:[NSDate dateWithTimeIntervalSinceNow:0]] == NSOrderedDescending) {
                 NSLog(@"login success");
-                [self.delegate authenticationFinished:YES];
+                [self.delegate authenticationFinished:AuthenticationSuccess];
             } else {
                 NSLog(@"cookie expired");
-                [self.delegate authenticationFinished:NO];
+                [self.delegate authenticationFinished:AuthenticationFailedTokenExpired];
             }
         }
     }
+    [self.delegate authenticationFinished:AuthenticationFailedTokenNotFound];
 }
 
 - (void)logout {

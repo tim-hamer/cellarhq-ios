@@ -10,9 +10,15 @@
 
 typedef void (^AuthenticationProviderCompletionBlock)(BOOL);
 
+typedef enum {
+    AuthenticationFailedTokenNotFound,
+    AuthenticationFailedTokenExpired,
+    AuthenticationSuccess,
+} AuthenticationStatus;
+
 @protocol AuthenticationProviderDelegate
 
-- (void)authenticationFinished:(BOOL)success;
+- (void)authenticationFinished:(AuthenticationStatus)status;
 
 @end
 

@@ -45,6 +45,9 @@
         [self.loginButton addTarget:self action:@selector(loginButtonPressed) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:self.loginButton];
         
+        self.spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        [self.view addSubview:self.spinnerView];
+        
         [self.usernameField makeConstraints:^(MASConstraintMaker *make) {
             make.top.equalTo(self.view.top).offset(80);
             make.centerX.equalTo(self.view.centerX);
@@ -64,9 +67,13 @@
             make.left.equalTo(self.passwordField.left);
         }];
         
+        [self.spinnerView makeConstraints:^(MASConstraintMaker *make) {
+            make.edges.equalTo(self.view);
+        }];
+        
         self.navigationItem.title = @"Login";
         self.view.backgroundColor = [UIColor whiteColor];
-        self.spinnerView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
+        self.spinnerView.hidden = YES;
         
         self.authProvider = [[AuthenticationProvider alloc] init];
         self.authProvider.delegate = self;
@@ -77,16 +84,12 @@
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-    [self.view addSubview:self.spinnerView];
-    [self.spinnerView startAnimating];
-    
+    [self showSpinner];
     [self.authProvider attemptAuthentication];
 }
 
 - (void)loginButtonPressed {
-    [self.view addSubview:self.spinnerView];
-    [self.spinnerView startAnimating];
+    [self showSpinner];
     [self.authProvider loginWithUsername:self.usernameField.text password:self.passwordField.text onComplete:^(BOOL success) {
         if (success) {
             [self loginSuccess];
@@ -99,25 +102,39 @@
 }
 
 - (void)loginSuccess {
-    [self.spinnerView stopAnimating];
-    [self.spinnerView removeFromSuperview];
-    
     Cellar *cellar = [[Cellar alloc] init];
     CellarViewController *cellarViewController = [[CellarViewController alloc] initWithCellar:cellar];
     [self.navigationController pushViewController:cellarViewController animated:YES];
 }
 
+- (void)hideSpinner {
+    self.spinnerView.hidden = YES;
+    [self.spinnerView stopAnimating];
+}
+
+- (void)showSpinner {
+    self.spinnerView.hidden = NO;
+    [self.spinnerView startAnimating];
+}
+
 #pragma mark - AuthenticationProviderDelegate
 
-- (void)authenticationFinished:(BOOL)success {
-    [self.spinnerView stopAnimating];
-    [self.spinnerView removeFromSuperview];
+- (void)authenticationFinished:(AuthenticationStatus)status {
+    [self hideSpinner];
     
-    if (success) {
-        [self loginSuccess];
-    } else {
-        UIAlertView *expiredView = [[UIAlertView alloc] initWithTitle:@"Session Expired" message:@"Please re-enter credentials to log in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [expiredView show];
+    switch (status) {
+        case AuthenticationSuccess: {
+            [self loginSuccess];
+            break;
+        }
+        case AuthenticationFailedTokenExpired: {
+            UIAlertView *expiredView = [[UIAlertView alloc] initWithTitle:@"Session Expired" message:@"Please re-enter credentials to log in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [expiredView show];
+            break;
+        }
+        case AuthenticationFailedTokenNotFound: {
+            break;
+        }
     }
 }
 
